@@ -1,0 +1,16 @@
+defineProperty("db1", globalPropertyf("tu154b2/custom/controlls/debug1"))
+defineProperty("db2", globalPropertyf("tu154b2/custom/controlls/debug2"))
+
+
+function update()
+	local index=get(db1) 
+	local wpt_type = 0
+	local wpt_name = "" 
+	local wpt_id = 0
+	local wpt_altitude = 0.0
+	local wpt_latitude = 0.0 
+	local wpt_longitude = 0.0
+
+	wpt_type, wpt_name, wpt_id, wpt_altitude, wpt_latitude, wpt_longitude = getFMSEntryInfo (index)
+	set(db2,wpt_type)
+end
