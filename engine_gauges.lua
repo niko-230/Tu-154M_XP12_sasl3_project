@@ -731,7 +731,7 @@ local function tachometers()
 	local alt_baro = get(msl_alt) or 0
 	if alt_baro > 12000 then alt_baro = 12000 end
 
-if MASTER then
+if true then -- DIAGNOSTIC: MASTER gate bypassed to test if it was blocking engine gauges
 	if T.start_timer < 60 then T.start_timer = T.start_timer + passed end
 
 	local flame1 = get(Tdr.burn1) or 0
