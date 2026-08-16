@@ -449,20 +449,16 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 
 	--min_idle=math.max(55.5,-1.6402629234e-01*math.pow(alt_baro/1000,2) + 4.6498254605e+00*alt_baro/1000 + 4.4995506536e+01) --- This is the old model
 	local mid_idle_isa_corr=0.12*d_isa
-	-- Corrected against real M reference: ground idle N2 is 58% (was 53.5%). The
-	-- floor is what actually governs ground-level idle here (the formula's own
-	-- curve value is below the floor at low altitude), so only the floor changes --
-	-- the curve's altitude sensitivity above the floor is left as B originally had
-	-- it. (Supersedes an earlier, since-disproven 65%-at-7,000ft adjustment to this
-	-- same line -- recalculating showed the original curve already gives ~71% at
-	-- 7,000ft, so that fix was wrong and is reverted here along with the correct one.)
-	-- Refitted against two real M reference points: ground idle N2 = 58%,
-	-- 7,000ft idle N2 = 65% (both stated directly, not derived). Original
-	-- quadratic (altitude-curvature) coefficient kept unchanged; linear and
-	-- constant terms solved to satisfy both points exactly. Floor set to 58
-	-- to match the ground point precisely (curve alone would undershoot below
-	-- roughly 3,000ft otherwise). ISA correction term kept as B originally had it.
-	min_idle=math.max(58,-2.2412587413e-01*math.pow(alt_baro/1000,2) + 2.5688811189e+00*alt_baro/1000 + 5.8000000000e+01+mid_idle_isa_corr)
+	-- SUPERSEDES all prior idle-floor edits in this file (58%/65%, then 28%/38%,
+	-- both based on a disputed visual gauge reading). This version is sourced
+	-- directly from the real Tu-154M flight manual (РЛЭ), Table 8.1.1 (ground,
+	-- ISA): idle N2 (КВД) = 59.5-61.5%, midpoint 60.5%; and Table 8.1.2 (H=11km,
+	-- M=0.8): idle N2 = 78%. Linear fit between these two real points (no
+	-- quadratic term -- the original curvature was fit to a different, disputed
+	-- range and risks bad extrapolation over this much larger altitude span).
+	-- N1 (КНД) at ground idle is documented as 30% -- this file only computes
+	-- N2 directly; N1 is derived elsewhere via n1_from_n2(), unchanged here.
+	min_idle=math.max(60.5,4.84909075392e-01*alt_baro/1000 + 6.05000000000e+01+mid_idle_isa_corr)
 	local kpp_idle_corr=interpolate(kpp_idle_corr_table,73-min_idle)
 	--math.max(55.5,1.945*alt_baro/1000+53.61)+get(db1)
 	-- max N2
