@@ -731,7 +731,7 @@ local function tachometers()
 	local alt_baro = get(msl_alt) or 0
 	if alt_baro > 12000 then alt_baro = 12000 end
 
-if true then -- DIAGNOSTIC: MASTER gate bypassed to test if it was blocking engine gauges
+if MASTER then
 	if T.start_timer < 60 then T.start_timer = T.start_timer + passed end
 
 	local flame1 = get(Tdr.burn1) or 0
@@ -1002,24 +1002,14 @@ if true then -- DIAGNOSTIC: MASTER gate bypassed to test if it was blocking engi
 	-- [v16] Условие выстрела ужесточено: активируется ТОЛЬКО при холодном запуске
 	-- - двигатель ещё ниже 5% (точно холодный)
 	-- - идёт стартер или подача топлива
-	-- - фаза не достигла 3 (выстрел ещё не отработал в этом цикле)
-	-- После выхода стрелки на МГ или остановки двигателя - состояние полностью сбрасывается
-	local is_starting1 = (flame1 > 0 or safe_get(Tdr.apd1, 0) > 0)
-		and T.disp_n2_1 < 5
-		and T.n2_jump_phase_1 < 3
-	local in_jump1 = T.n2_jump_phase_1 > 0 and T.n2_jump_phase_1 < 3
+	-- SIMPLIFIED: the startup-jump animation state machine (is_starting1/in_jump1/
+	-- n2_with_jump) had a bug causing gauges to stay stuck at zero when the
+	-- aircraft is loaded with engines already running (state read once at script
+	-- load, before X-Plane fully restores the running-engine situation). Rather
+	-- than the fragile animation, always display the real calibrated N2 value
+	-- directly -- reliable in every case, just without the cosmetic needle-jump
+	-- flourish on a cold start.
 	local n2_jump_disp_1 = T.disp_n2_1
-	if is_starting1 or in_jump1 then
-		-- Активируем выстрел или продолжаем уже запущенный
-		n2_jump_disp_1, T.n2_jump_phase_1, T.n2_jump_val_1 =
-			n2_with_jump(T.disp_n2_1, T.n2_jump_phase_1, T.n2_jump_val_1, true, passed)
-	else
-		-- Сбрасываем состояние когда двигатель остановлен или вышел из зоны старта
-		if flame1 == 0 or T.disp_n2_1 >= 30 then
-			T.n2_jump_phase_1 = 0
-			T.n2_jump_val_1 = 0
-		end
-	end
 	set(rpm_high_1, n2_jump_disp_1 + T.bias_n2_1 * bool2int(T.ang1 > 5) + idle_jitter1 + startup_flutter1 + shutdown_jitter1)
 
 	T.N1need2 = target2
@@ -1050,21 +1040,8 @@ if true then -- DIAGNOSTIC: MASTER gate bypassed to test if it was blocking engi
 	local disp_n2_2 = math.min(T.n2_max, interpolate(T.n2_scale, T.ang2 + T.n2_adv2 + surge2_osc))
 	disp_n2_2 = disp_n2_2 + idle_n2_corr * temp_corr_weight(disp_n2_2)
 	T.disp_n2_2 = disp_n2_2
-	-- [v16] см. двиг 1 - выстрел только при холодном запуске
-	local is_starting2 = (flame2 > 0 or safe_get(Tdr.apd2, 0) > 0)
-		and T.disp_n2_2 < 5
-		and T.n2_jump_phase_2 < 3
-	local in_jump2 = T.n2_jump_phase_2 > 0 and T.n2_jump_phase_2 < 3
+	-- SIMPLIFIED: see engine 1 -- fragile jump animation removed, real value always shown.
 	local n2_jump_disp_2 = T.disp_n2_2
-	if is_starting2 or in_jump2 then
-		n2_jump_disp_2, T.n2_jump_phase_2, T.n2_jump_val_2 =
-			n2_with_jump(T.disp_n2_2, T.n2_jump_phase_2, T.n2_jump_val_2, true, passed)
-	else
-		if flame2 == 0 or T.disp_n2_2 >= 30 then
-			T.n2_jump_phase_2 = 0
-			T.n2_jump_val_2 = 0
-		end
-	end
 	set(rpm_high_2, n2_jump_disp_2 + T.bias_n2_2 * bool2int(T.ang2 > 5) + idle_jitter2 + startup_flutter2 + shutdown_jitter2)
 
 	T.N1need3 = target3
@@ -1096,21 +1073,8 @@ if true then -- DIAGNOSTIC: MASTER gate bypassed to test if it was blocking engi
 	local disp_n2_3 = math.min(T.n2_max, interpolate(T.n2_scale, T.ang3 + T.n2_adv3 + surge3_osc))
 	disp_n2_3 = disp_n2_3 + idle_n2_corr * temp_corr_weight(disp_n2_3)
 	T.disp_n2_3 = disp_n2_3
-	-- [v16] см. двиг 1 - выстрел только при холодном запуске
-	local is_starting3 = (flame3 > 0 or safe_get(Tdr.apd3, 0) > 0)
-		and T.disp_n2_3 < 5
-		and T.n2_jump_phase_3 < 3
-	local in_jump3 = T.n2_jump_phase_3 > 0 and T.n2_jump_phase_3 < 3
+	-- SIMPLIFIED: see engine 1 -- fragile jump animation removed, real value always shown.
 	local n2_jump_disp_3 = T.disp_n2_3
-	if is_starting3 or in_jump3 then
-		n2_jump_disp_3, T.n2_jump_phase_3, T.n2_jump_val_3 =
-			n2_with_jump(T.disp_n2_3, T.n2_jump_phase_3, T.n2_jump_val_3, true, passed)
-	else
-		if flame3 == 0 or T.disp_n2_3 >= 30 then
-			T.n2_jump_phase_3 = 0
-			T.n2_jump_val_3 = 0
-		end
-	end
 	set(rpm_high_3, n2_jump_disp_3 + T.bias_n2_3 * bool2int(T.ang3 > 5) + idle_jitter3 + startup_flutter3 + shutdown_jitter3)
 
 	-- [NEW-4] Скорость изменения N2 — КВД реагирует быстрее КНД
