@@ -36,7 +36,7 @@
 
 defineProperty("xp_version", globalPropertyi("sim/version/xplane_internal_version"))
 -- определяем версию симулятора сразу чтобы использовать ниже при объявлении датарефов
-local _xp_ver_early = get(globalPropertyi("sim/version/xplane_internal_version"))
+local _xp_ver_early = get(globalPropertyi("sim/version/xplane_internal_version")) or 0
 IS_XP12 = _xp_ver_early >= 120000
 -- controls
 defineProperty("control_ut", globalPropertyi("tu154b2/custom/buttons/eng/control_ut")) -- кнопка контроль УТ
@@ -203,7 +203,7 @@ end
 local passed = get_passed()
 
 -- FIX: определяем версию один раз при старте
-local xp_version_val = get(xp_version)
+local xp_version_val = get(xp_version) or 0
 local IS_XP12 = xp_version_val >= 120000  -- XP12 internal version >= 120000
 local IS_XP11 = xp_version_val >= 110000 and xp_version_val < 120000
 
@@ -228,15 +228,15 @@ local function get_baro_inhg()
 	end
 end
 
-local power_27_L = get(bus27_volt_left) > 13
-local power_27_R = get(bus27_volt_right) > 13
-local power_36_L = get(bus36_volt_left) > 30
-local power_36_R = get(bus36_volt_right) > 30
-local power_115 = get(bus115_1_volt) > 110
+local power_27_L = (get(bus27_volt_left) or 0) > 13
+local power_27_R = (get(bus27_volt_right) or 0) > 13
+local power_36_L = (get(bus36_volt_left) or 0) > 30
+local power_36_R = (get(bus36_volt_right) or 0) > 30
+local power_115 = (get(bus115_1_volt) or 0) > 110
 
-local gau_1_on = get(gauges_on_1)
-local gau_2_on = get(gauges_on_2)
-local gau_3_on = get(gauges_on_3)
+local gau_1_on = get(gauges_on_1) or 0
+local gau_2_on = get(gauges_on_2) or 0
+local gau_3_on = get(gauges_on_3) or 0
 
 -- vibration gauges
 
@@ -250,9 +250,9 @@ local function vibra_gau()
 	local vibr_2 = 0
 	local vibr_3 = 0
 	
-	local vibrat_1 = get(vibration_1)
-	local vibrat_2 = get(vibration_2)
-	local vibrat_3 = get(vibration_3)
+	local vibrat_1 = get(vibration_1) or 0
+	local vibrat_2 = get(vibration_2) or 0
+	local vibrat_3 = get(vibration_3) or 0
 	
 	if power_27_L then
 		if get(control_vibro_1) == 1 then
@@ -341,28 +341,28 @@ local function emi3()
 	local oilT_3 = -50
 	
 	if power_36_L then 
-		fuelP_1 = interpolate(fuel_P_table, get(fuel_p_1))-- * gau_1_on
-		oilP_1 = interpolate(oil_P_table, get(oil_p_1)) * 0.1-- * gau_1_on 
+		fuelP_1 = interpolate(fuel_P_table, get(fuel_p_1) or 0)-- * gau_1_on
+		oilP_1 = interpolate(oil_P_table, get(oil_p_1) or 0) * 0.1-- * gau_1_on 
 	end	
 	
 	if power_36_R then
-		fuelP_2 = interpolate(fuel_P_table, get(fuel_p_2))-- * gau_2_on
-		fuelP_3 = interpolate(fuel_P_table, get(fuel_p_3))-- * gau_3_on
+		fuelP_2 = interpolate(fuel_P_table, get(fuel_p_2) or 0)-- * gau_2_on
+		fuelP_3 = interpolate(fuel_P_table, get(fuel_p_3) or 0)-- * gau_3_on
 		
-		oilP_2 = interpolate(oil_P_table, get(oil_p_2)) * 0.1-- * gau_2_on
-		oilP_3 = interpolate(oil_P_table, get(oil_p_3)) * 0.1-- * gau_3_on
+		oilP_2 = interpolate(oil_P_table, get(oil_p_2) or 0) * 0.1-- * gau_2_on
+		oilP_3 = interpolate(oil_P_table, get(oil_p_3) or 0) * 0.1-- * gau_3_on
 	end
 	
 	if power_27_L then --and gau_1_on == 1 then
-		oilT_1 = get(oil_t_1)
+		oilT_1 = get(oil_t_1) or oilT_1
 	end
 
 	if power_27_R then --and gau_2_on == 1 then
-		oilT_2 = get(oil_t_2)
+		oilT_2 = get(oil_t_2) or oilT_2
 	end
 
 	if power_27_R then --and gau_3_on == 1 then
-		oilT_3 = get(oil_t_3)
+		oilT_3 = get(oil_t_3) or oilT_3
 	end	
 
 	-- smooth movements
@@ -428,15 +428,15 @@ local function egt_gauges()
 	local test_button = get(control_ut) == 1
 	
 	if power_L then
-		egt_1_need = get(sim_egt_1) * (1 + stall_1 * 1)
+		egt_1_need = (get(sim_egt_1) or 0) * (1 + stall_1 * 1)
 		if test_button then egt_1_need = 120 end
 		EGT_gau_on_L = 1
 	else
 		EGT_gau_on_L = 0
 	end
 	if power_R then
-		egt_2_need = get(sim_egt_2) * (1 + stall_2 * 1)
-		egt_3_need = get(sim_egt_3) * (1 + stall_3 * 1)
+		egt_2_need = (get(sim_egt_2) or 0) * (1 + stall_2 * 1)
+		egt_3_need = (get(sim_egt_3) or 0) * (1 + stall_3 * 1)
 		if test_button then egt_2_need = 140 end
 		if test_button then egt_3_need = 130 end
 		EGT_gau_on_R = 1
@@ -473,9 +473,9 @@ local function fuel_flow()
 	local power = power_27_R and power_115 and get(fuel_meter_on) == 1
 	
 	if power then 
-		FF_1 = get(ENGN_FF_1) * 3600 * (1 - get(fuel_flowmeter_1_fail))
-		FF_2 = get(ENGN_FF_2) * 3600 * (1 - get(fuel_flowmeter_2_fail))
-		FF_3 = get(ENGN_FF_3) * 3600 * (1 - get(fuel_flowmeter_3_fail))
+		FF_1 = (get(ENGN_FF_1) or 0) * 3600 * (1 - (get(fuel_flowmeter_1_fail) or 0))
+		FF_2 = (get(ENGN_FF_2) or 0) * 3600 * (1 - (get(fuel_flowmeter_2_fail) or 0))
+		FF_3 = (get(ENGN_FF_3) or 0) * 3600 * (1 - (get(fuel_flowmeter_3_fail) or 0))
 		fuel_flow_gau_on = 1
 	else
 		fuel_flow_gau_on = 0
@@ -728,7 +728,7 @@ end
 
 local function tachometers()
 
-	local alt_baro = get(msl_alt)
+	local alt_baro = get(msl_alt) or 0
 	if alt_baro > 12000 then alt_baro = 12000 end
 
 if MASTER then
@@ -1488,9 +1488,9 @@ local oil_qty_act_3 = 4
 
 local function oil_qty_gau()
 	
-	local oil_now_1 = get(engn_oil_qty_1)
-	local oil_now_2 = get(engn_oil_qty_2)
-	local oil_now_3 = get(engn_oil_qty_3)
+	local oil_now_1 = get(engn_oil_qty_1) or 0
+	local oil_now_2 = get(engn_oil_qty_2) or 0
+	local oil_now_3 = get(engn_oil_qty_3) or 0
 	
 	
 	local qty_1 = 4
@@ -1531,7 +1531,7 @@ local fuel_temp_act_2 = 0
 
 local function fuel_temp_gau()
 
-	local air_temp = get(thermo)
+	local air_temp = get(thermo) or 15
 	
 	if power_27_R then 
 		fuel_temp_act_1 = fuel_temp_act_1 + (air_temp - fuel_temp_act_1) * passed
@@ -1564,15 +1564,15 @@ function update()
 	MASTER = get(ismaster) ~= 1	
 	
 	
-	power_27_L = get(bus27_volt_left) > 13
-	power_27_R = get(bus27_volt_right) > 13
-	power_115 = get(bus115_1_volt) > 110
-	power_36_L = get(bus36_volt_left) > 30
-	power_36_R = get(bus36_volt_right) > 30
+	power_27_L = (get(bus27_volt_left) or 0) > 13
+	power_27_R = (get(bus27_volt_right) or 0) > 13
+	power_115 = (get(bus115_1_volt) or 0) > 110
+	power_36_L = (get(bus36_volt_left) or 0) > 30
+	power_36_R = (get(bus36_volt_right) or 0) > 30
 	
-	gau_1_on = get(gauges_on_1)
-	gau_2_on = get(gauges_on_2) 
-	gau_3_on = get(gauges_on_3)
+	gau_1_on = get(gauges_on_1) or 0
+	gau_2_on = get(gauges_on_2) or 0
+	gau_3_on = get(gauges_on_3) or 0
 	
 	tachometers()
 	egt_gauges()
