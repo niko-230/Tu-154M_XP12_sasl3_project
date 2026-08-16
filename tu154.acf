@@ -45156,17 +45156,17 @@ P acf/_APU_spoolup_time 1.000000000
 P acf/_AP_overspeed_prot 1
 P acf/_AShi_alpha_k 0.000000000
 P acf/_AShi_alpha_sec 0.000000000
-P acf/_AShi_beta_k 0.100000001
-P acf/_AShi_beta_sec 1.000000000
-P acf/_AShi_hdng_rat 0.699999988
+P acf/_AShi_beta_k 0.000000000
+P acf/_AShi_beta_sec 0.000000000
+P acf/_AShi_hdng_rat 1.000000000
 P acf/_AShi_max_G 100.900001526
 P acf/_AShi_max_G_init 99.900001526
 P acf/_AShi_max_alpha 0.000000000
-P acf/_AShi_max_beta 50.000000000
+P acf/_AShi_max_beta 0.000000000
 P acf/_AShi_max_phidot 0.000000000
 P acf/_AShi_phi_V 1.000000000
 P acf/_AShi_phidot_k 0.000000000
-P acf/_AShi_psi_V 100.000000000
+P acf/_AShi_psi_V 1.000000000
 P acf/_AShi_ptch_rat 1.000000000
 P acf/_AShi_roll_rat 1.000000000
 P acf/_AShi_the_V 1.000000000
@@ -45256,7 +45256,7 @@ P acf/_ITT_is_C 1
 P acf/_Jxx_unitmass 32.680000305
 P acf/_Jyy_unitmass 34.220001221
 P acf/_Jzz_unitmass 17.639999390
-P acf/_Mmo 0.000000000
+P acf/_Mmo 0.860000014
 P acf/_RAT_KEAS 0.000000000
 P acf/_RSC_idlespeed_ENGN 0.000000000
 P acf/_RSC_maxgreen_ENGN 1.000000000
@@ -45282,12 +45282,12 @@ P acf/_TOGA_discos_servos 0
 P acf/_TRQ_is_pcnt 0
 P acf/_Va_kts 0.000000000
 P acf/_Vbg_kts 0.000000000
-P acf/_Vfe1_kts 240.000000000
-P acf/_Vfem_kts 170.000000000
-P acf/_Vle_kts 999.000000000
+P acf/_Vfe1_kts 227.000000000
+P acf/_Vfem_kts 162.000000000
+P acf/_Vle_kts 216.000000000
 P acf/_Vmca_kts 0.000000000
-P acf/_Vne_kts 400.000000000
-P acf/_Vno_kts 330.000000000
+P acf/_Vne_kts 324.000000000
+P acf/_Vno_kts 310.000000000
 P acf/_Vs_kts 150.000000000
 P acf/_Vso_kts 110.000000000
 P acf/_Vx_kts 0.000000000
@@ -46147,8 +46147,8 @@ P acf/_bouncer_spring_k/9,1 0.000000000
 P acf/_bouncer_spring_k/9,2 0.000000000
 P acf/_bouncer_spring_k/i_count 14
 P acf/_bouncer_spring_k/j_count 3
-P acf/_brake_co 0.750000000
-P acf/_brake_max_stopping_KTGS 92.000000000
+P acf/_brake_co 0.500000000
+P acf/_brake_max_stopping_KTGS 150.000000000
 P acf/_brake_to_steer_power 0.000000000
 P acf/_burner_delay_sec 0.000000000
 P acf/_burner_inc 0.000000000
@@ -46987,7 +46987,7 @@ P acf/_cyclic_lf_trim_rat 0.000000000
 P acf/_cyclic_rt_trim_rat 0.000000000
 P acf/_cyclic_up_trim_rat 0.000000000
 P acf/_default_livery_name Default
-P acf/_deg_psi_per_deg_def 6.000000000
+P acf/_deg_psi_per_deg_def 12.000000000
 P acf/_deg_the_per_deg_def 6.000000000
 P acf/_delta3 0.000000000
 P acf/_descrip Tupolev Tu154M
@@ -47808,7 +47808,7 @@ P acf/_idle_rat/count 2
 P acf/_incidence_with_flaps 0
 P acf/_inlet_compression_efficiency 0.649999976
 P acf/_inlet_max_KEAS 550.000000000
-P acf/_inlet_max_temp_C 100.000000000
+P acf/_inlet_max_temp_C 120.000000000
 P acf/_integrated_approach_navigation 0
 P acf/_inverted_fuel_oil_EQ 1
 P acf/_inverter_for_elec_gyros 0
@@ -47962,8 +47962,8 @@ P acf/_ott_phi_sec_to_tune 2.000000000
 P acf/_ott_psi_deg_off_for_full_def 15.000000000
 P acf/_ott_psi_sec_into_future 0.750000000
 P acf/_ott_psi_sec_to_tune 15.000000000
-P acf/_ott_roll_rate 6.000000000
-P acf/_ott_roll_response 0.100000001
+P acf/_ott_roll_rate 8.000000000
+P acf/_ott_roll_response 6.955680847
 P acf/_ott_the_deg_off_for_full_def 31.899999619
 P acf/_ott_the_deg_per_kt 0.200000003
 P acf/_ott_the_sec_into_future 0.899999976
@@ -48119,7 +48119,7 @@ P acf/_rock_max_vac 0.000000000
 P acf/_roll_acft_lf_trim_rat 0.250000000
 P acf/_roll_acft_rt_trim_rat 0.250000000
 P acf/_roll_acft_trim_mode 0
-P acf/_roll_co 0.015000000
+P acf/_roll_co 0.029999999
 P acf/_roll_max_full_def_KIAS 999.000000000
 P acf/_roll_to_eng_spo1 0.050000001
 P acf/_roll_to_eng_spo2 0.050000001
@@ -48307,7 +48307,7 @@ P acf/_sster_def_time 0.000000000
 P acf/_stab_hdng 0.000000000
 P acf/_stab_roll 0.000000000
 P acf/_stab_trim_dn 0.000000000
-P acf/_stab_trim_up 8.000000000
+P acf/_stab_trim_up 6.500000000
 P acf/_stab_with_Vind 0.000000000
 P acf/_stab_with_flap 0.000000000
 P acf/_stall_warn_aoa 10.000000000

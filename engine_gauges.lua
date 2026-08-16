@@ -820,20 +820,23 @@ local eng1_N1_need=0
 local eng2_N1_need=0
 local eng3_N1_need=0
 
-local M_rot=0.45 -- rotor mass
-local c_aero=0.0035 -- drag coefficient
+-- Ported from M donor: real Д-30КУ-154 rotor physics, tuned by M's author
+-- against real spool time (n2_M_rot tuning log: 0.18->0.32->0.42->0.55->1.0,
+-- target ~40s from 26s). Previously still B's lighter/faster НК-8-derived values.
+local M_rot=0.55 -- rotor mass (KND, Д-30 heavier than NK-8)
+local c_aero=0.0032 -- drag coefficient (KND)
 local a_N1=0
 local q=0
-local c_q_base=0.0001 -- windmilling coefficient
-local c_f=0.0002 -- friction coefficient
+local c_q_base=0.00012 -- windmilling coefficient (large fan, M-tuned)
+local c_f=0.00018 -- friction coefficient (KND, M-tuned)
 
 local n2_1_runout=0
 local n2_2_runout=0
 local n2_3_runout=0
-local n2_c_aero=0.0003
-local n2_c_f=0.01
-local n2_c_q=0.00002
-local n2_M_rot=0.15
+local n2_c_aero=0.00025 -- less drag, high-speed rotor (M-tuned)
+local n2_c_f=0.005 -- less friction, better bearings; tuned for starter compat (M-tuned)
+local n2_c_q=0.000018 -- M-tuned
+local n2_M_rot=1.0 -- KVD rotor mass, calibrated to ~40s to idle (M-tuned)
 
 local fan_1=math.random()*360
 local fan_3=math.random()*360
@@ -997,9 +1000,16 @@ if MASTER then
 	-- low pressure turbine
 	
     -- expected N1 at idle N2
-	local low_idle1=n1_from_n2 (idle_rpm,d_isa,alt_baro/1000,tas_LP)-rna1
-	local low_idle2=n1_from_n2 (idle_rpm,d_isa,alt_baro/1000,tas_LP)-rna2-interpolate(eng2_n1_corr_tbl,idle_rpm)
-	local low_idle3=n1_from_n2 (idle_rpm,d_isa,alt_baro/1000,tas_LP)-rna3
+	-- Real ground idle N1 floor: the shared n1_from_n2() formula produces
+	-- ~36-42% at the real N2=60.5 ground idle point, not the real ~28% figure.
+	-- This floor only engages near ground idle (formula output stays above it
+	-- at higher N2/altitude idle targets), so it doesn't distort the rest of
+	-- the envelope -- it also recalibrates c_turb1/2/3 below, which sets the
+	-- turbine power coefficient used across the full spool range, not just
+	-- the idle display.
+	local low_idle1=math.max(28,n1_from_n2 (idle_rpm,d_isa,alt_baro/1000,tas_LP)-rna1)
+	local low_idle2=math.max(28,n1_from_n2 (idle_rpm,d_isa,alt_baro/1000,tas_LP)-rna2-interpolate(eng2_n1_corr_tbl,idle_rpm))
+	local low_idle3=math.max(28,n1_from_n2 (idle_rpm,d_isa,alt_baro/1000,tas_LP)-rna3)
 	local c_q=c_q_base*interpolate(c_q_corr_table,tas_LP)
 	-- correct turbine power coefficient to match idle N1
 	c_turb1=c_aero*dens*math.pow(low_idle1,2)/math.pow(high_idle,2)-c_q*q/math.pow(high_idle,2)
@@ -1277,16 +1287,6 @@ function update()
 	passed = get(frame_time)
 	
 	MASTER = get(ismaster) ~= 1	
-	
-	-- TEMP DEBUG — remove after diagnosis. Prints once every ~3s to Log.txt.
-	debug_timer_tmp = (debug_timer_tmp or 0) + passed
-	if debug_timer_tmp > 3 then
-		debug_timer_tmp = 0
-		print("DEBUGTMP MASTER="..tostring(MASTER)..
-			" burn1="..tostring(get(burn1))..
-			" rawN2_1="..tostring(get(eng1_N2))..
-			" ismaster="..tostring(get(ismaster)))
-	end
 	
 	power_27_L = get(bus27_volt_left) > 13
 	power_27_R = get(bus27_volt_right) > 13
