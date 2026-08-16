@@ -48473,7 +48473,7 @@ P acf/_throt_time_jet 1.000000000
 P acf/_throt_time_prop 0.500000000
 P acf/_throttle_drives_EPR 0
 P acf/_throttle_drives_N2 1
-P acf/_thrust_max_limit 3.2507E4
+P acf/_thrust_max_limit 2.680150E4
 P acf/_thrust_rev_dep_time 1.000000000
 P acf/_tip_AOA_des 0.000000000
 P acf/_tip_mach_des_100 0.000000000

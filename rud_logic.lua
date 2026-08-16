@@ -101,7 +101,7 @@ defineProperty("temp_SL", globalPropertyf("sim/weather/temperature_sealevel_c"))
 defineProperty("press_SL", globalPropertyf("sim/weather/barometer_sealevel_inhg"))
 
 defineProperty("flt_idle", globalPropertyf("tu154b2/custom/engines/flight_idle"))
-defineProperty("flt_idle_rpm", globalPropertyf("tu154b2/custom/engines/flight_idle_rpm"))
+--defineProperty("flt_idle_rpm", globalPropertyf("tu154b2/custom/engines/flight_idle_rpm"))
 
 defineProperty("max_n2", globalPropertyf("tu154b2/engine/max_KVD"))
 defineProperty("nom_n2", globalPropertyf("tu154b2/engine/nom_KVD"))
