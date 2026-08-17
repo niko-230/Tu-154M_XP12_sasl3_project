@@ -67,8 +67,8 @@ defineProperty("deflection_mtr_2", globalProperty("sim/flightmodel2/gear/tire_ve
 defineProperty("deflection_mtr_3", globalProperty("sim/flightmodel2/gear/tire_vertical_deflection_mtr[2]")) -- 
 defineProperty("revers_L", globalPropertyf("tu154b2/custom/controlls/revers_L")) -- рычаг реверса лев
 defineProperty("revers_R", globalPropertyf("tu154b2/custom/controlls/revers_R")) -- рычаг реверса прав
-defineProperty("spd_brk_inn_L", globalProperty("sim/flightmodel2/wing/speedbrake1_deg[0]")) -- inner speedbrake left Degrees
-defineProperty("spd_brk_inn_R", globalProperty("sim/flightmodel2/wing/speedbrake1_deg[1]")) -- inner speedbrake right Degrees
+defineProperty("spd_brk_inn_L", globalProperty("sim/flightmodel/controls/wing1l_spo1def")) -- inner speedbrake left Degrees
+defineProperty("spd_brk_inn_R", globalProperty("sim/flightmodel/controls/wing1r_spo1def")) -- inner speedbrake right Degrees
 defineProperty("kontur_on", globalPropertyf("tu154b2/custom/b2/kontur_on")) -- inner speedbrake right Degrees
 flaps_power = globalPropertyi("sim/custom/b2/flaps_power")
 -- FIX: bare global assignments (missing defineProperty wrapper), causing "can't load

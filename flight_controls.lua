@@ -54,9 +54,8 @@ defineProperty("ail_L", globalPropertyf("sim/flightmodel/controls/wing3l_ail1def
 defineProperty("ail_R", globalPropertyf("sim/flightmodel/controls/wing3r_ail1def")) -- aileron right Degrees, positive is trailing-edge down. +- 20
 
 -- spoilers
-defineProperty("spd_brk_inn_L", globalProperty("sim/flightmodel2/wing/speedbrake1_deg[0]")) -- inner speedbrake left Degrees
-defineProperty("spd_brk_inn_R", globalProperty("sim/flightmodel2/wing/speedbrake1_deg[1]")) -- inner speedbrake right Degrees
---defineProperty("spd_brk_inn_R", globalPropertyf("sim/flightmodel/controls/wing1r_spo1def")) -- inner speedbrake right Degrees
+defineProperty("spd_brk_inn_L", globalProperty("sim/flightmodel/controls/wing1l_spo1def")) -- inner speedbrake left Degrees
+defineProperty("spd_brk_inn_R", globalProperty("sim/flightmodel/controls/wing1r_spo1def")) -- inner speedbrake right Degrees
 
 defineProperty("spd_brk_inn_anim_L", globalPropertyf("tu154b2/custom/anim/spd_brk_inn_left")) -- inner speedbrake left animation Degrees
 defineProperty("spd_brk_inn_anim_R", globalPropertyf("tu154b2/custom/anim/spd_brk_inn_right")) -- inner speedbrake right animation Degrees
