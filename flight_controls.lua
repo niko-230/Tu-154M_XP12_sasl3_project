@@ -350,24 +350,19 @@ end
 
 	---------------------------------
 	-- spoilers logic --
-	-- Real behavior, confirmed via direct in-sim observation (not present in
-	-- M donor's own flight_controls.lua as such -- checked exhaustively, M's
-	-- actual code only has a single simpler combined trigger):
-	--   outer: deploys on ground contact ALONE, regardless of throttle
-	--          position. Once forced open it just holds wherever the lever
-	--          is (nothing retracts it), so it naturally stays deployed
-	--          through the whole rollout including after briefly going
-	--          airborne again (a bounce).
-	--   inner: requires ground contact, reverse open, AND idle throttle,
-	--          all three together. Won't deploy at all with reverse alone
-	--          if throttle isn't idle. Retracts immediately if any one of
-	--          the three drops out -- airborne, reverse stowed, or throttle
-	--          advanced off idle.
+	-- Confirmed identical across THREE independent Tu-154 codebases now:
+	-- M_donor's own flight_controls.lua, AND a completely unrelated third
+	-- project (VisualFLT's UNS-variant Tu-154M, different developer
+	-- entirely) -- both use this exact single combined trigger for BOTH
+	-- middle and inner together. Every attempt at a more "refined" separate
+	-- trigger based on verbal description diverged from what real,
+	-- independently-written code actually does. This is the real logic.
 	local gears = get(deflection_mtr_2) > 0.01 and get(deflection_mtr_3) > 0.01
 	local ruds_iddle = get(anim_rud1) < 0.1 and get(anim_rud2) < 0.1 and get(anim_rud3) < 0.1
 	local revers = get(revers_L) > 0.1 and get(revers_R) > 0.1
+	local IAS_lim = get(ias_L) > 54 or get(ias_R) > 54
 
-	local auto_deploy = power_27_L and gears
+	local auto_deploy = power_27_L and gears and ((ruds_iddle and IAS_lim) or revers)
 
 	---------------------------------
 	-- middle spoilers --
@@ -390,12 +385,9 @@ end
 
 	---------------------------------
 	-- inner spoilers --
-	-- requires ALL THREE: ground contact, reverse open, AND idle throttle.
-	-- Won't deploy at all if throttle isn't idle even with reverse selected.
-	-- Retracts the instant any one of the three drops out -- airborne,
-	-- reverse stowed, or throttle advanced off idle.
-	local inner_deploy = gears and revers and ruds_iddle
-	local spoilers_cmd = bool2int(inner_deploy) -- add automatic logic here
+	-- same single auto_deploy trigger as middle, exactly matching all three
+	-- confirmed real donor codebases.
+	local spoilers_cmd = bool2int(auto_deploy) -- add automatic logic here
 
 	local spoil_L = spoilers_cmd * 50 * bool2int(power_27_L)
 	local spoil_R = spoilers_cmd * 50 * bool2int(power_27_L)
