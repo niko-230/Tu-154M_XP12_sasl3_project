@@ -384,7 +384,14 @@ end
 
 	---------------------------------
 	-- inner spoilers --
-	local spoilers_cmd = bool2int(auto_deploy) -- add automatic logic here
+	-- B's physical lever is 2-stage: stage 1 (partial pull) = outer/middle
+	-- only, stage 2 (full pull, speedbrake_ratio > 0.95) also commands inner.
+	-- M's own auto_deploy (idle+speed or reverse) still applies for the
+	-- touchdown case. Both stay gated by gears=true so inner can never
+	-- deploy in the air even if the lever reads >0.95 there -- only auto_deploy
+	-- (which already requires gears) or lever_stage2+gears can trigger it.
+	local lever_stage2 = gears and get(speedbrake_ratio) > 0.95
+	local spoilers_cmd = bool2int(auto_deploy or lever_stage2) -- add automatic logic here
 
 	local spoil_L = spoilers_cmd * 50 * bool2int(power_27_L)
 	local spoil_R = spoilers_cmd * 50 * bool2int(power_27_L)
