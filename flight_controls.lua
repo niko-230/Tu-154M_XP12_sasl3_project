@@ -363,6 +363,18 @@ end
 
 	local auto_deploy = power_27_L and gears and ((ruds_iddle and IAS_lim) or revers)
 
+	-- TEMP DEBUG: throttled to ~1x/sec. Remove once diagnosed. Watch Log.txt
+	-- during a landing/touchdown to see exactly which condition is failing.
+	spoiler_dbg_t = (spoiler_dbg_t or 0) + passed
+	if spoiler_dbg_t > 1 then
+		spoiler_dbg_t = 0
+		print(string.format("[SPOIL_DBG] defl2=%.4f defl3=%.4f gears=%s ruds_idle=%s rud1=%.2f rud2=%.2f rud3=%.2f IAS_L=%.1f IAS_R=%.1f revL=%.2f revR=%.2f p27L=%s auto_deploy=%s spd_brk_ratio=%.2f",
+			get(deflection_mtr_2) or -1, get(deflection_mtr_3) or -1, tostring(gears), tostring(ruds_iddle),
+			get(anim_rud1) or -1, get(anim_rud2) or -1, get(anim_rud3) or -1,
+			get(ias_L) or -1, get(ias_R) or -1, get(revers_L) or -1, get(revers_R) or -1,
+			tostring(power_27_L), tostring(auto_deploy), get(speedbrake_ratio) or -1))
+	end
+
 	---------------------------------
 	-- middle spoilers --
 
