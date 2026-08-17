@@ -15205,7 +15205,7 @@ P _obja/40/_v10_att_y_acf_prt_ref 6.699999809
 P _obja/40/_v10_att_z_acf_prt_ref 68.580001831
 P _obja/40/_v10_is_internal 0
 P _obja/40/_v10_steers_with_gear 0
-P _obja/41/_obj_flags 28
+P _obja/41/_obj_flags 60
 P _obja/41/_v10_att_body -1
 P _obja/41/_v10_att_file_stl wings.obj
 P _obja/41/_v10_att_gear -1
