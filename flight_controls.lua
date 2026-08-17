@@ -134,7 +134,7 @@ defineProperty("revers_L", globalPropertyf("tu154b2/custom/controlls/revers_L"))
 defineProperty("revers_R", globalPropertyf("tu154b2/custom/controlls/revers_R")) -- рычаг реверса прав
 
 defineProperty("ias_L", globalPropertyf("sim/flightmodel/position/indicated_airspeed")) -- indicated airspeed in KTS
---defineProperty("ias_R", globalPropertyf("sim/cockpit2/gauges/indicators/airspeed_kts_copilot"))
+defineProperty("ias_R", globalPropertyf("sim/cockpit2/gauges/indicators/airspeed_kts_copilot"))
 -- get(ias) * 1.852 -- km/hr
 
 -- currents
@@ -359,7 +359,7 @@ end
 	local gears = get(deflection_mtr_2) > 0.01 and get(deflection_mtr_3) > 0.01
 	local ruds_iddle = get(anim_rud1) < 0.1 and get(anim_rud2) < 0.1 and get(anim_rud3) < 0.1
 	local revers = get(revers_L) > 0.1 and get(revers_R) > 0.1
-	local IAS_lim = get(ias_L) > 54
+	local IAS_lim = get(ias_L) > 54 or get(ias_R) > 54
 
 	local auto_deploy = power_27_L and gears and ((ruds_iddle and IAS_lim) or revers)
 
@@ -384,14 +384,7 @@ end
 
 	---------------------------------
 	-- inner spoilers --
-	-- B's physical lever is 2-stage: stage 1 (partial pull) = outer/middle
-	-- only, stage 2 (full pull, speedbrake_ratio > 0.95) also commands inner.
-	-- M's own auto_deploy (idle+speed or reverse) still applies for the
-	-- touchdown case. Both stay gated by gears=true so inner can never
-	-- deploy in the air even if the lever reads >0.95 there -- only auto_deploy
-	-- (which already requires gears) or lever_stage2+gears can trigger it.
-	local lever_stage2 = gears and get(speedbrake_ratio) > 0.95
-	local spoilers_cmd = bool2int(auto_deploy or lever_stage2) -- add automatic logic here
+	local spoilers_cmd = bool2int(auto_deploy) -- add automatic logic here
 
 	local spoil_L = spoilers_cmd * 50 * bool2int(power_27_L)
 	local spoil_R = spoilers_cmd * 50 * bool2int(power_27_L)
