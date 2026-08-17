@@ -17366,13 +17366,13 @@ TRIS	0 8688
 # wings.011
 ANIM_begin
 	ANIM_trans	  -1.9091   -3.0078    1.4909	  -1.9091   -3.0078    1.4909	0 0	no_ref
-	ANIM_rotate	  -1.0000    0.0038    0.0000	  0.00  60.00	0 60.0	sim/custom/anim/spd_brk_inn_left
+	ANIM_rotate	  -1.0000    0.0038    0.0000	  0.00  60.00	0 60.0	tu154b2/custom/anim/spd_brk_inn_left
 	TRIS	8688 180
 ANIM_end
 # wings.004
 ANIM_begin
 	ANIM_trans	   1.9091   -3.0078    1.4909	   1.9091   -3.0078    1.4909	0 0	no_ref
-	ANIM_rotate	  -1.0000   -0.0038   -0.0000	  0.00  60.00	0 60.0	sim/custom/anim/spd_brk_inn_right
+	ANIM_rotate	  -1.0000   -0.0038   -0.0000	  0.00  60.00	0 60.0	tu154b2/custom/anim/spd_brk_inn_right
 	TRIS	8868 180
 ANIM_end
 # slats.R.001

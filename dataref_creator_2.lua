@@ -769,3 +769,10 @@ createGlobalPropertyf("tu154b2/custom/hydro/gear_fluid_3",0)
 -- createGlobalPropertyi("tu154b2/custom/b2/heating_starter",0)
 -- createGlobalPropertyi("tu154b2/custom/b2/azs_fireext1",0)
 -- createGlobalPropertyi("tu154b2/custom/b2/azs_fireext2",0)
+-- FIX: these were referenced (bare, unregistered) in controls_panel.lua and
+-- flaps.lua but never actually created anywhere in the project, causing
+-- "attempt to perform arithmetic on nil value" crashes in controls_panel's
+-- lamps() function every frame. B's own dataref_creator_2.lua has always had
+-- these -- Target's copy was missing them.
+createGlobalPropertyi("tu154b2/custom/controlls/flap_chan_1", 0)
+createGlobalPropertyi("tu154b2/custom/controlls/flap_chan_2", 0)
