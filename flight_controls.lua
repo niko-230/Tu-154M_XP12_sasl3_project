@@ -367,7 +367,12 @@ end
 	local revers = get(revers_L) > 0.1 and get(revers_R) > 0.1
 	local IAS_lim = get(ias_L) > 54 or get(ias_R) > 54
 
-	local auto_deploy = power_27_L and gears and ((ruds_iddle and IAS_lim) or revers)
+	-- outer/middle auto-deploy is now purely the real touchdown signal
+	-- (idle throttles + rollout speed) -- independent of reverse. A landing
+	-- without reverse should still get outer spoilers; reverse on its own
+	-- shouldn't be what triggers outer. Reverse exclusively drives inner via
+	-- inner_deploy below.
+	local auto_deploy = power_27_L and gears and ruds_iddle and IAS_lim
 
 	---------------------------------
 	-- middle spoilers --
