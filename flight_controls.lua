@@ -60,6 +60,12 @@ defineProperty("spd_brk_inn_R", globalProperty("sim/flightmodel2/wing/speedbrake
 
 defineProperty("spd_brk_inn_anim_L", globalPropertyf("tu154b2/custom/anim/spd_brk_inn_left")) -- inner speedbrake left animation Degrees
 defineProperty("spd_brk_inn_anim_R", globalPropertyf("tu154b2/custom/anim/spd_brk_inn_right")) -- inner speedbrake right animation Degrees
+-- wings.obj (M's model, actually in use) reads this dataref instead, under
+-- M's own namespace -- confirmed via direct check of wings.obj's ANIM_rotate
+-- commands. This is the actual visual binding; the one above may be vestigial
+-- now but is left alone since nothing else references it either way.
+defineProperty("spd_brk_inn_anim_L_M", globalPropertyf("sim/custom/anim/spd_brk_inn_left"))
+defineProperty("spd_brk_inn_anim_R_M", globalPropertyf("sim/custom/anim/spd_brk_inn_right"))
 
 
 defineProperty("spd_brk_mid_L", globalPropertyf("sim/flightmodel/controls/wing2l_spo2def")) -- middle speedbrake left Degrees
@@ -647,6 +653,8 @@ end
 		-- set animations
 		set(spd_brk_inn_anim_L, left_inn_sp_act * (1 - get(fail_spoil_inn_left)))
 		set(spd_brk_inn_anim_R, right_inn_sp_act * (1 - get(fail_spoil_inn_right)))
+		set(spd_brk_inn_anim_L_M, left_inn_sp_act * (1 - get(fail_spoil_inn_left)))
+		set(spd_brk_inn_anim_R_M, right_inn_sp_act * (1 - get(fail_spoil_inn_right)))
 		
 		set(yoke_pitch, cockpit_yoke_pitch)
 		set(yoke_roll, cockpit_yoke_roll)
