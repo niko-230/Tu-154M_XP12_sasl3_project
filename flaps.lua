@@ -207,7 +207,10 @@ local auto_retract = 0
 local flaps_dir_1 = 0
 local flaps_dir_2 = 0
 
-local flap_SPD = 45/21 -- deg per second
+-- ported from M (donor's own comment: "defolt flap_SPD = 1.8"): real M flap
+-- drive speed. B's own value (45/21 = ~2.14 deg/sec, 45deg in 21s) was still
+-- live here -- M's flaps genuinely move slower (45deg in 25s).
+local flap_SPD = 1.8 -- deg per second
 local flap_pos_L_last = flaps_pos_cmd
 local flap_pos_R_last = flaps_pos_cmd
 
