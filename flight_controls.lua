@@ -660,6 +660,14 @@ end
 		set(spd_brk_inn_anim_R, right_inn_sp_act * (1 - get(fail_spoil_inn_right)))
 		set(spd_brk_inn_anim_L_M, left_inn_sp_act * (1 - get(fail_spoil_inn_left)))
 		set(spd_brk_inn_anim_R_M, right_inn_sp_act * (1 - get(fail_spoil_inn_right)))
+
+		-- TEMP DEBUG: throttled to ~1x/sec. Remove once diagnosed.
+		spoiler_dbg_t3 = (spoiler_dbg_t3 or 0) + passed
+		if spoiler_dbg_t3 > 1 then
+			spoiler_dbg_t3 = 0
+			print(string.format("[SPOIL_DBG3] left_inn_sp_act=%.2f anim_dataref_read_L=%.2f anim_dataref_read_R=%.2f",
+				left_inn_sp_act or -1, get(spd_brk_inn_anim_L_M) or -1, get(spd_brk_inn_anim_R_M) or -1))
+		end
 		
 		set(yoke_pitch, cockpit_yoke_pitch)
 		set(yoke_roll, cockpit_yoke_roll)
