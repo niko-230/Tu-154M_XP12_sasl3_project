@@ -350,29 +350,24 @@ end
 
 	---------------------------------
 	-- spoilers logic --
-	-- copied from M donor wholesale (donor comment: "spoilers logic Tu154M
-	-- Felis to jeni original"), replacing B's more complex kontur_on/delay
-	-- state machine entirely. One auto_deploy trigger now drives BOTH middle
-	-- and inner spoilers together, exactly as M's own code does -- gear
-	-- compressed + throttles idle + above 54kt, or reverse thrust engaged.
-	--
-	-- Note this also gives the "outer only in flight" behavior for free:
-	-- middle spoilers read the lever (speedbrake_ratio) directly, so they can
-	-- be manually deployed airborne as a speedbrake. Inner spoilers have NO
-	-- manual/lever path at all -- they ONLY ever move via auto_deploy, which
-	-- requires gears=true (on ground). So inner is structurally ground-only,
-	-- matching M's design, with no extra gating needed.
+	-- Real behavior, confirmed via direct in-sim observation (not present in
+	-- M donor's own flight_controls.lua as such -- checked exhaustively, M's
+	-- actual code only has a single simpler combined trigger):
+	--   outer: deploys on ground contact ALONE, regardless of throttle
+	--          position. Once forced open it just holds wherever the lever
+	--          is (nothing retracts it), so it naturally stays deployed
+	--          through the whole rollout including after briefly going
+	--          airborne again (a bounce).
+	--   inner: requires ground contact, reverse open, AND idle throttle,
+	--          all three together. Won't deploy at all with reverse alone
+	--          if throttle isn't idle. Retracts immediately if any one of
+	--          the three drops out -- airborne, reverse stowed, or throttle
+	--          advanced off idle.
 	local gears = get(deflection_mtr_2) > 0.01 and get(deflection_mtr_3) > 0.01
 	local ruds_iddle = get(anim_rud1) < 0.1 and get(anim_rud2) < 0.1 and get(anim_rud3) < 0.1
 	local revers = get(revers_L) > 0.1 and get(revers_R) > 0.1
-	local IAS_lim = get(ias_L) > 54 or get(ias_R) > 54
 
-	-- outer/middle auto-deploy is now purely the real touchdown signal
-	-- (idle throttles + rollout speed) -- independent of reverse. A landing
-	-- without reverse should still get outer spoilers; reverse on its own
-	-- shouldn't be what triggers outer. Reverse exclusively drives inner via
-	-- inner_deploy below.
-	local auto_deploy = power_27_L and gears and ruds_iddle and IAS_lim
+	local auto_deploy = power_27_L and gears
 
 	---------------------------------
 	-- middle spoilers --
@@ -395,13 +390,11 @@ end
 
 	---------------------------------
 	-- inner spoilers --
-	-- inner tracks reverser state directly, not the combined auto_deploy --
-	-- outer/middle stays out through the whole rollout (idle+speed keeps
-	-- auto_deploy true even after reverse is stowed), but inner should
-	-- deploy the moment reverse opens and retract the moment it closes,
-	-- independent of whether idle+speed is still satisfied. Still gated by
-	-- gears so it can never trigger in the air.
-	local inner_deploy = gears and revers
+	-- requires ALL THREE: ground contact, reverse open, AND idle throttle.
+	-- Won't deploy at all if throttle isn't idle even with reverse selected.
+	-- Retracts the instant any one of the three drops out -- airborne,
+	-- reverse stowed, or throttle advanced off idle.
+	local inner_deploy = gears and revers and ruds_iddle
 	local spoilers_cmd = bool2int(inner_deploy) -- add automatic logic here
 
 	local spoil_L = spoilers_cmd * 50 * bool2int(power_27_L)
@@ -660,14 +653,6 @@ end
 		set(spd_brk_inn_anim_R, right_inn_sp_act * (1 - get(fail_spoil_inn_right)))
 		set(spd_brk_inn_anim_L_M, left_inn_sp_act * (1 - get(fail_spoil_inn_left)))
 		set(spd_brk_inn_anim_R_M, right_inn_sp_act * (1 - get(fail_spoil_inn_right)))
-
-		-- TEMP DEBUG: throttled to ~1x/sec. Remove once diagnosed.
-		spoiler_dbg_t3 = (spoiler_dbg_t3 or 0) + passed
-		if spoiler_dbg_t3 > 1 then
-			spoiler_dbg_t3 = 0
-			print(string.format("[SPOIL_DBG3] left_inn_sp_act=%.2f anim_dataref_read_L=%.2f anim_dataref_read_R=%.2f",
-				left_inn_sp_act or -1, get(spd_brk_inn_anim_L_M) or -1, get(spd_brk_inn_anim_R_M) or -1))
-		end
 		
 		set(yoke_pitch, cockpit_yoke_pitch)
 		set(yoke_roll, cockpit_yoke_roll)
