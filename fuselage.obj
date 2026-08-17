@@ -27043,20 +27043,20 @@ ANIM_begin
 	# elevator.001
 	ANIM_begin
 		ANIM_trans	  -0.4500    0.2152    1.0917	  -0.4500    0.2152    1.0917	0 0	no_ref
-		ANIM_rotate	   0.8111   -0.0164   -0.5847	  0.00   1.00	0 1	sim/custom/anim/elev_anim_L
+		ANIM_rotate	   0.8111   -0.0164   -0.5847	  -29.00   29.00	-29 29	tu154b2/custom/anim/elev_anim_L
 		TRIS	66453 978
 	ANIM_end
 	# elevator
 	ANIM_begin
 		ANIM_trans	   0.4500    0.2152    1.0917	   0.4500    0.2152    1.0917	0 0	no_ref
-		ANIM_rotate	   0.8111    0.0164    0.5847	  0.00   1.00	0 1	sim/custom/anim/elev_anim_R
+		ANIM_rotate	   0.8111    0.0164    0.5847	  -29.00   29.00	-29 29	tu154b2/custom/anim/elev_anim_R
 		TRIS	67431 978
 	ANIM_end
 ANIM_end
 # rudder
 ANIM_begin
 	ANIM_trans	   0.0000    1.1706   15.4624	   0.0000    1.1706   15.4624	0 0	no_ref
-	ANIM_rotate	   0.0000   -0.8134   -0.5817	  0.00   1.00	0 1	sim/custom/anim/rudder_anim
+	ANIM_rotate	   0.0000   -0.8134   -0.5817	  -25.00   25.00	-25 25	tu154b2/custom/anim/rudder_anim
 	TRIS	68409 612
 ANIM_end
 # front_gear_door.002
