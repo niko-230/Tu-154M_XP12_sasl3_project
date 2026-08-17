@@ -363,17 +363,6 @@ end
 
 	local auto_deploy = power_27_L and gears and ((ruds_iddle and IAS_lim) or revers)
 
-	-- TEMP DEBUG: throttled to ~1x/sec. Remove once diagnosed. Watch Log.txt
-	-- during a landing/touchdown to see exactly which condition is failing.
-	spoiler_dbg_t = (spoiler_dbg_t or 0) + passed
-	if spoiler_dbg_t > 1 then
-		spoiler_dbg_t = 0
-		print(string.format("[SPOIL_DBG] gears=%s auto_deploy=%s spd_brk_ratio=%.2f HS1=%.3f mid_L=%.2f mid_R=%.2f inn_L=%.2f inn_R=%.2f out_dataref_L=%.2f out_dataref_R=%.2f",
-			tostring(gears), tostring(auto_deploy), get(speedbrake_ratio) or -1, HS1 or -1,
-			left_mid_sp_act or -1, right_mid_sp_act or -1, left_inn_sp_act or -1, right_inn_sp_act or -1,
-			get(spd_brk_inn_L) or -1, get(spd_brk_inn_R) or -1))
-	end
-
 	---------------------------------
 	-- middle spoilers --
 
@@ -395,7 +384,14 @@ end
 
 	---------------------------------
 	-- inner spoilers --
-	local spoilers_cmd = bool2int(auto_deploy) -- add automatic logic here
+	-- inner tracks reverser state directly, not the combined auto_deploy --
+	-- outer/middle stays out through the whole rollout (idle+speed keeps
+	-- auto_deploy true even after reverse is stowed), but inner should
+	-- deploy the moment reverse opens and retract the moment it closes,
+	-- independent of whether idle+speed is still satisfied. Still gated by
+	-- gears so it can never trigger in the air.
+	local inner_deploy = gears and revers
+	local spoilers_cmd = bool2int(inner_deploy) -- add automatic logic here
 
 	local spoil_L = spoilers_cmd * 50 * bool2int(power_27_L)
 	local spoil_R = spoilers_cmd * 50 * bool2int(power_27_L)
