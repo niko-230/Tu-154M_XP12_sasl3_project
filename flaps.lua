@@ -94,7 +94,6 @@ local dist_gain=5
 
 local mkv_1=1.5
 local mkv_2=3
-local mkv_2_5=4.5 -- ADDED (2026-08-18): real M target for flap 28 deg, was missing entirely
 local mkv_3=5.5
 
 local function inn_balance (src_x, src_z, x, z , cam_hdg)
@@ -503,35 +502,35 @@ if MASTER then
 	local stab_move_act=0
 
 	if get(stab_man_cap) == 0 and get(stab_automatic_fail) == 0 then -- automatic controls and no automatic fails
-		-- FIXED (2026-08-18): real Tu-154M auto-stab schedule is flap-position-tiered --
-		-- flap 15 deg -> stab -3.0, flap 28 deg -> stab -4.5, flap 36/45 deg -> stab -5.5
-		-- (confirmed via real B/M reference data). The previous logic only had a 2-way flap
-		-- split (before/after flap 31 deg) selected by the CG switch (stab_set), which
-		-- collapsed flap 15 and flap 28 onto the same target, and could only ever reach
-		-- -5.5 when stab_set==2 (aft CG) -- at any other CG setting flaps 36/45 never got
-		-- past -3.0, chronically under-trimming full-flap approach. Replaced with a direct
-		-- 3-tier flap-position schedule matching M's real numbers, independent of stab_set
-		-- (no per-CG variant of M's schedule has been sourced -- if one turns up, a
-		-- stab_set branch can be reintroduced here).
-		local stab_target
-		if flap_lever_pos>2 or flap_pos_L_last>14 then
-			if flap_pos_L_last < 21 then
-				stab_target = mkv_2   -- flap ~15 deg -> -3.0
-			elseif flap_pos_L_last < 32 then
-				stab_target = mkv_2_5 -- flap ~28 deg -> -4.5
-			else
-				stab_target = mkv_3   -- flap ~36/45 deg -> -5.5
+		local stab_set = get(stab_setting)
+		if flap_lever_pos>2 or flap_pos_L_last>25 then
+			if stab_dirr ==1 then
+				if flap_pos_L_last<31 then
+					if stab_set == 2 then
+						stab_move=bool2int(stab_pos_now < mkv_2)
+					elseif stab_set == 1 then
+						stab_move=bool2int(stab_pos_now < mkv_1)
+					end
+				else
+					if stab_set == 2 then
+						stab_move=bool2int(stab_pos_now < mkv_3)
+					elseif stab_set == 1 then
+						stab_move=bool2int(stab_pos_now < mkv_2)
+					end
+				end
+			elseif stab_dirr ==-1 then
+				if flap_pos_L_last<44 then
+					if stab_set == 2 then
+						stab_move=-bool2int(stab_pos_now >= mkv_2)
+					elseif stab_set == 1 then
+						stab_move=-bool2int(stab_pos_now >= mkv_1)
+					elseif stab_set == 0 then
+						stab_move=-bool2int(stab_pos_now > 0)
+					end
+				end
 			end
 		else
-			stab_target = 0
-		end
-
-		if stab_pos_now < stab_target - 0.01 then
-			stab_move = 1
-		elseif stab_pos_now > stab_target + 0.01 then
-			stab_move = -1
-		else
-			stab_move = 0
+			stab_move=-bool2int(stab_pos_now >0)
 		end
 		stab_move_act=stab_move	
 	elseif get(stab_man_cap) == 1 then -- manual stab control
