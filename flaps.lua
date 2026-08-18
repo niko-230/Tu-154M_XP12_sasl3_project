@@ -207,16 +207,30 @@ local auto_retract = 0
 local flaps_dir_1 = 0
 local flaps_dir_2 = 0
 
--- ported from M (donor's own comment: "defolt flap_SPD = 1.8"): real M flap
--- drive speed. B's own value (45/21 = ~2.14 deg/sec, 45deg in 21s) was still
--- live here -- M's flaps genuinely move slower (45deg in 25s).
-local flap_SPD = 1.8 -- deg per second
+-- REPLACED (2026-08-18): flat 1.8 deg/s was an approximation. Real Tu-154 flap
+-- drive is segmented, not linear -- full-hydraulics reference times: 0-15deg in
+-- 7-8s, 15-28deg in 7s, 28-36deg in 4s, 36-45deg in 9s. Rates below use the
+-- midpoint of the 0-15 range (7.5s) and are exact for the other three segments.
+local function flap_rate(pos)
+	if pos < 15 then
+		return 15/7.5      -- 2.000 deg/s
+	elseif pos < 28 then
+		return 13/7         -- 1.857 deg/s
+	elseif pos < 36 then
+		return 8/4          -- 2.000 deg/s
+	else
+		return 9/9           -- 1.000 deg/s
+	end
+end
 local flap_pos_L_last = flaps_pos_cmd
 local flap_pos_R_last = flaps_pos_cmd
 
 local slats_pos_cmd = get(slats)
 local slats_dirr = 0
-local slats_spd = 0.035
+-- FIXED (2026-08-18): real slat travel is 18s full extension/retraction
+-- (1/18 = 0.05556 ratio/sec). Previous value (0.035, ~28.6s) was B's leftover
+-- constant, never actually matched to either donor's real slat timing.
+local slats_spd = 1/18
 local slats_prev = 0
 
 local stab_pos_now = get(stab_ratio) * 5.5 -- 0 - 5.5 degrees
@@ -386,7 +400,7 @@ if MASTER then
 		flap_desync = 1
 	end
 	-- move the flaps
-	drive_pos_now = drive_pos_now + passed * (flaps_dir_1 * HS1 * power_1 +  flaps_dir_2 * HS2 * power_2 )/2 * flap_SPD
+	drive_pos_now = drive_pos_now + passed * (flaps_dir_1 * HS1 * power_1 +  flaps_dir_2 * HS2 * power_2 )/2 * flap_rate(drive_pos_now)
 	
 	-- set limits
 	if drive_pos_now > 45 then 
