@@ -558,7 +558,7 @@ if MASTER then
 	--stab_dirr = 0
 	--stab_pos_cmd = 0
 	set(stab_ratio, stab_pos_now / 5.5)
-	set(stab_pos,-stab_pos_now*1-1.5)
+	set(stab_pos,-stab_pos_now) -- FIXED (2026-08-18): dropped -1.5 baseline offset, no M equivalent exists
 	set(ctr_115_1_cc, CC_115_1)
 	set(ctr_115_3_cc, CC_115_3)
 	

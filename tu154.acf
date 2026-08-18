@@ -41539,8 +41539,8 @@ P _wing/7/_yawbr/8 0
 P _wing/7/_yawbr/9 0
 P _wing/7/_yawbr/count 10
 P _wing/7/_yawbr_hyd0123 0
-P _wing/8/_Croot 14.028508186
-P _wing/8/_Ctip 7.284833908
+P _wing/8/_Croot 12.900000000
+P _wing/8/_Ctip 6.500000000
 P _wing/8/_afl_file_1 hstab.afl
 P _wing/8/_afl_file_2 hstab.afl
 P _wing/8/_afl_file_3 hstab.afl
@@ -43272,7 +43272,7 @@ P _wing/8/_sbrk2/8 0
 P _wing/8/_sbrk2/9 0
 P _wing/8/_sbrk2/count 10
 P _wing/8/_sbrk2_hyd0123 0
-P _wing/8/_semilen_SEG 27.940000534
+P _wing/8/_semilen_SEG 27.000000000
 P _wing/8/_slat1/0 0
 P _wing/8/_slat1/1 0
 P _wing/8/_slat1/2 0
@@ -43342,8 +43342,8 @@ P _wing/8/_yawbr/8 0
 P _wing/8/_yawbr/9 0
 P _wing/8/_yawbr/count 10
 P _wing/8/_yawbr_hyd0123 0
-P _wing/9/_Croot 14.028508186
-P _wing/9/_Ctip 7.284833908
+P _wing/9/_Croot 12.900000000
+P _wing/9/_Ctip 6.500000000
 P _wing/9/_afl_file_1 hstab.afl
 P _wing/9/_afl_file_2 hstab.afl
 P _wing/9/_afl_file_3 hstab.afl
@@ -45075,7 +45075,7 @@ P _wing/9/_sbrk2/8 0
 P _wing/9/_sbrk2/9 0
 P _wing/9/_sbrk2/count 10
 P _wing/9/_sbrk2_hyd0123 0
-P _wing/9/_semilen_SEG 27.940000534
+P _wing/9/_semilen_SEG 27.000000000
 P _wing/9/_slat1/0 0
 P _wing/9/_slat1/1 0
 P _wing/9/_slat1/2 0
