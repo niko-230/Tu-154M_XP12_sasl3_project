@@ -526,11 +526,11 @@ if MASTER then
 						stab_move=bool2int(stab_pos_now < mkv_1)
 					end
 				else
-					if stab_set == 2 then
-						stab_move=bool2int(stab_pos_now < mkv_3)
-					elseif stab_set == 1 then
-						stab_move=bool2int(stab_pos_now < mkv_2)
-					end
+					-- FIXED (2026-08-18): real M behavior at final flap stage (36/45deg) --
+					-- APS always drives stab to max (-5.5) regardless of CG setting. B's real
+					-- behavior (what this branch used to implement) keeps CG-dependency all the
+					-- way to full flap; M only lets CG affect the intermediate stage above.
+					stab_move=bool2int(stab_pos_now < mkv_3)
 				end
 			elseif stab_dirr ==-1 then
 				if flap_pos_L_last<44 then
@@ -572,7 +572,7 @@ if MASTER then
 	--stab_dirr = 0
 	--stab_pos_cmd = 0
 	set(stab_ratio, stab_pos_now / 5.5)
-	set(stab_pos,-stab_pos_now) -- FIXED (2026-08-18): dropped -1.5 baseline offset, no M equivalent exists
+	set(stab_pos, -1.5 - (stab_pos_now/5.5)*4.0) -- FIXED (2026-08-18): real M functional range is -1.5 to -5.5 (span 4.0deg), not 0 to -5.5 (B) or -1.5 to -7.0 (previous B-leftover formula). Mechanism ratio/rate (0-5.5, ~27.5s dual motor) is real and correct -- only rescaled the output mapping.
 	set(ctr_115_1_cc, CC_115_1)
 	set(ctr_115_3_cc, CC_115_3)
 	
