@@ -272,7 +272,7 @@ local joy_rud_pos_1 = get(tro_comm_1)
 local joy_rud_pos_2 = get(tro_comm_2)
 local joy_rud_pos_3 = get(tro_comm_3)
 
-local rud_lim=1/5
+local rud_lim=0.03 -- was 1/5 (0.2): real РЛЭ spool range is 35-80s (typical ~50s), 0.25/sec cap gave ~4s full sweep -- unrealistically fast. 0.03 targets ~33s full-range sweep, within the documented range.
 -- local rud_lim_2=1/5
 -- local rud_lim_3=1/5
 local n2_1=55
@@ -464,12 +464,14 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 	-- max N2
 	local thr_max=math.min(97.5,97.5-bool2int(alt_baro<4000)*(30-temp-4.5)*0.1411)
 	-- max N1
-	--local n2_at_max_n1=n2_from_n1 (100,d_isa,alt_baro/1000,tas)
-	--set(db1,n2_at_max_n1)
-	--local n2_at_max_n1_norev=n2_from_n1 (100,d_isa,alt_baro/1000,tas)+0.5
-	-- max N2 limited by max N1
-	-- local thr_max1=math.min(n2_at_max_n1,thr_max)
-	-- local thr_max2=math.min(n2_at_max_n1_norev,thr_max)
+	-- RESTORED (2026-08-18): this was B's own disabled safety ceiling -- N2 target was never
+	-- capped by "N1 would exceed 100%", only by the temp/altitude thr_max above. Confirmed via
+	-- live test: N1/N2 were pegging at ~100 instead of the real ~91-95%/~96-98.5% ceiling.
+	local n2_at_max_n1=n2_from_n1 (100,d_isa,alt_baro/1000,tas)
+	local n2_at_max_n1_norev=n2_from_n1 (100,d_isa,alt_baro/1000,tas)+0.5
+	-- max N2 limited by max N1 -- whichever ceiling (temp/alt or N1-based) is more restrictive wins
+	local thr_max1=math.min(n2_at_max_n1,thr_max)
+	local thr_max2=math.min(n2_at_max_n1_norev,thr_max)
 
 	-- Anti Surge Bypass Valves
 	if kvd1>74.6 and kpp_1>0 and not kp1_fail then
@@ -544,19 +546,19 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 		n2_tgt1=n2_from_uprt (virtual_rud_1_act,corr_temp,-spread_coeff/2)
 		n2_1=n2_tgt1
 	else
-		n2_1=nom_rpm+(thr_max-nom_rpm)*(virtual_rud_1_act-0.89)/0.11-- seperate logic between nominal and max power
+		n2_1=nom_rpm+(thr_max1-nom_rpm)*(virtual_rud_1_act-0.89)/0.11-- seperate logic between nominal and max power -- was plain thr_max, now uses the restored N1-based ceiling too
 	end
 	if virtual_rud_2_act+shift_2<=0.89 then
 		n2_tgt2=n2_from_uprt (virtual_rud_2_act+shift_2,corr_temp,-spread_coeff/3)
 		n2_2=n2_tgt2
 	else
-		n2_2=nom_rpm+(thr_max-nom_rpm)*(virtual_rud_2_act+shift_2-0.89)/0.11
+		n2_2=nom_rpm+(thr_max1-nom_rpm)*(virtual_rud_2_act+shift_2-0.89)/0.11
 	end
 	if virtual_rud_3_act+shift_3<=0.89 then
 		n2_tgt3=n2_from_uprt (virtual_rud_3_act+shift_3,corr_temp,-spread_coeff)
 		n2_3=n2_tgt3
 	else
-		n2_3=nom_rpm+(thr_max-nom_rpm)*(virtual_rud_3_act+shift_3-0.89)/0.11
+		n2_3=nom_rpm+(thr_max1-nom_rpm)*(virtual_rud_3_act+shift_3-0.89)/0.11
 	end
 	-- increase idle at altitude
 	n2_1=math.max(min_idle+kpp_idle_corr*kpp_1,n2_1)
@@ -612,42 +614,60 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 	-- rud_lim_2=interpolate(rud_lim_tbl,kvd2)*get(db1)
 	-- rud_lim_3=interpolate(rud_lim_tbl,kvd3)*get(db1)
 	-- set(db2,rud_lim_2)
-	rud_lim=0.25
+	-- FIXED (2026-08-18): rud_lim was a single SHARED variable computed only from kvd1 (engine 1),
+	-- then used to cap ALL THREE engines' rate -- engine 2 has genuinely different dynamics
+	-- (own N1 correction curve, no reverse) so its real N2 state doesn't track engine 1's, but
+	-- it was being force-capped by engine 1's zone anyway. Confirmed via user report: engines 1
+	-- and 3 spooled consistently with each other, engine 2 diverged -- exactly what a
+	-- kvd1-only-derived shared cap would produce. Now per-engine (rud_lim_1/2/3), each from its
+	-- own kvd. Also bumped the up-ramp again (0.025-0.08 was still "too slow" per feedback) to
+	-- 0.05-0.11. Down-direction clamps use a SEPARATE fixed rud_lim_down, unchanged from the
+	-- confirmed-good 0.025 -- decoupled so retuning the up-ramp can't disturb the down feel.
+	local rud_lim_down=0.025
+	local function up_ramp(kvd)
+		if kvd<60.5 then return 0.05
+		elseif kvd<72 then return 0.05+(0.11-0.05)*(kvd-60.5)/(72-60.5)
+		else return 0.11 end
+	end
+	local rud_lim_1=up_ramp(kvd1)
+	local rud_lim_2=up_ramp(kvd2)
+	local rud_lim_3=up_ramp(kvd3)
+	rud_lim=rud_lim_1 -- kept for any other stray reference to the old shared name
 	local idle_lim_1=2*bool2int(kvd1>55.5-spread_coeff/2-1.3)
 	if kvd1<55.5-spread_coeff/2-idle_lim_1 then
-		contr_1_spd=-rud_lim
+		contr_1_spd=-rud_lim_down
 	end
 	local idle_lim_2=2*bool2int(kvd2>55.5-spread_coeff/3-1.3)
 	if kvd2<55.5-spread_coeff/3-idle_lim_2 then
-		contr_2_spd=-rud_lim
+		contr_2_spd=-rud_lim_down
 	end
 	local idle_lim_3=2*bool2int(kvd3>55.5-spread_coeff-1.3)
 	if kvd3<55.5-spread_coeff-idle_lim_3 then
-		contr_3_spd=-rud_lim
+		contr_3_spd=-rud_lim_down
 	end
 	
 	--limit thorttle speed
 	if kvd1<min_idle then
-		contr_1_spd=math.min(contr_1_spd,rud_lim/(1+alt_baro/2000))
+		contr_1_spd=math.min(contr_1_spd,rud_lim_1/(1+alt_baro/2000))
 	end	
 	if kvd2<min_idle then
-		contr_2_spd=math.min(contr_2_spd,rud_lim/(1+alt_baro/2000))
+		contr_2_spd=math.min(contr_2_spd,rud_lim_2/(1+alt_baro/2000))
 	end	
 	if kvd3<min_idle then
-		contr_3_spd=math.min(contr_3_spd,rud_lim/(1+alt_baro/2000))
+		contr_3_spd=math.min(contr_3_spd,rud_lim_3/(1+alt_baro/2000))
 	end	
-	if contr_1_spd>rud_lim then
-		contr_1_spd=rud_lim
+	if contr_1_spd>rud_lim_1 then
+		contr_1_spd=rud_lim_1
 	-- elseif contr_1_spd<-rud_lim then
 		-- contr_1_spd=-rud_lim
 	end	
-	if contr_2_spd>rud_lim then
-		contr_2_spd=rud_lim
+	if contr_2_spd>rud_lim_2 then
+		contr_2_spd=rud_lim_2
 	-- elseif contr_2_spd<-rud_lim_2 then
 		-- contr_2_spd=-rud_lim_2
 	end
-	if contr_3_spd>rud_lim then
-		contr_3_spd=rud_lim
+	if contr_3_spd>rud_lim_3 then
+		contr_3_spd=rud_lim_3
 	-- elseif contr_3_spd<-rud_lim_3 then
 		-- contr_3_spd=-rud_lim_3
 	end
