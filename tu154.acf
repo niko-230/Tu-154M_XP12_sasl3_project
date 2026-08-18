@@ -47374,7 +47374,7 @@ P acf/_face_jet 8.909999847
 P acf/_face_rocket 0.000000000
 P acf/_fadec_EQ_mixture 0
 P acf/_fadec_EQ_rpm_limit 0
-P acf/_fadec_parameter 1
+P acf/_fadec_parameter 0
 P acf/_fadec_prevents_overboost 0
 P acf/_fadec_prevents_temp_EGT 0
 P acf/_fadec_prevents_temp_ITT 0
