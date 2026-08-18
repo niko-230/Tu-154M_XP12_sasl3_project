@@ -40,8 +40,8 @@ defineProperty("flap_mid_R", globalPropertyf("sim/flightmodel/controls/wing2r_fl
 -- via Log.txt: "not found", then nil-value crash once actually used in arithmetic).
 -- Switched to the same stock dataref rud_logic.lua already reads successfully
 -- (R_1/R_2/R_3), indices 0=left engine, 2=right engine.
-defineProperty("thrust_L", globalPropertyf("sim/cockpit2/engine/indicators/thrust_dry_n[0]")) 
-defineProperty("thrust_R", globalPropertyf("sim/cockpit2/engine/indicators/thrust_dry_n[2]"))
+defineProperty("thrust_L", globalProperty("sim/cockpit2/engine/indicators/thrust_dry_n[0]")) 
+defineProperty("thrust_R", globalProperty("sim/cockpit2/engine/indicators/thrust_dry_n[2]"))
 defineProperty("true_airspeed", globalPropertyf("sim/flightmodel/position/true_airspeed"))
 
 defineProperty("cl_GE1", globalProperty("sim/flightmodel/parts/CL_grndeffect[8]"))
