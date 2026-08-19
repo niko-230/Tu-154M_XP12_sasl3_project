@@ -20,12 +20,6 @@ createGlobalPropertyf("tu154b2/custom/anim/light_open_left", 0) -- выпуск 
 createGlobalPropertyf("tu154b2/custom/anim/light_open_right", 0) -- выпуск правой фары
 createGlobalPropertyf("tu154b2/custom/anim/spd_brk_inn_left", 0) -- положение левого внутреннего спидбрейка
 createGlobalPropertyf("tu154b2/custom/anim/spd_brk_inn_right", 0) -- положение правого внутреннего спидбрейка
--- wings.obj (M's model, actually in use) animates the inner spoiler off this
--- dataref instead, under M's own namespace convention (sim/custom/...) --
--- confirmed via direct grep of wings.obj's ANIM_rotate commands. This was
--- never registered anywhere, so the visual side had nothing to write to.
-createGlobalPropertyf("sim/custom/anim/spd_brk_inn_left", 0)
-createGlobalPropertyf("sim/custom/anim/spd_brk_inn_right", 0)
 createGlobalPropertyf("tu154b2/custom/anim/wing_flx_left", 0) -- угол изгиба левого крыла. положительные значения - изгиб вверх
 createGlobalPropertyf("tu154b2/custom/anim/wing_flx_right", 0) -- угол изгиба правого крыла. положительные значения - изгиб вверх
 createGlobalPropertyf("tu154b2/custom/anim/rudder_anim", 0) -- угол поворота руля направления для анимации. его физичческая модель будет поворачиваться на меньший угол при реверсе.
