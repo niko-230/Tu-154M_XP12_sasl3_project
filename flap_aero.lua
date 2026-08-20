@@ -227,13 +227,19 @@ function update()
 	local flap1_cl = (6.00e-04*math.pow(flap_inn,2) - 1.30e-02*flap_inn + 1.08) + slat_cl_add
 	local flap2_cl = (7.85e-04*math.pow(flap_out,2) - 1.20e-02*flap_out + 1.18) + slat_cl_add
 
-	-- B's own addition, kept as-is: M has no equivalent gear-retraction pitch term
+	-- FIXED (2026-08-20): ported to M's exact formula from M_donor/flap_aero.lua.
+	-- Previous version was missing the * q term in lift_tot, making engine_pitch
+	-- NOT proportional to dynamic pressure (not V^2) -- directly caused "lift not
+	-- relative to speed" symptom. Also corrected formula constants to M's real values
+	-- (0.05 vs 0.05285, 2.6 vs 2.7, 1.45 vs 1.5) and removed gear_pitch term
+	-- (Target's own comment already noted M has no equivalent for this).
+	local q = get(dens) / 2 * math.pow(tas / 3.6, 2) -- dynamic pressure Pa
 	local spd=interpolate(engine_lift_tbl,tas)
-	local lft=interpolate(engine_lift_tbl2,lift)
-	local engine_pitch=80000*0.05285*9.81*2.7*(1.5*(r_1+r_3)/100000)*spd*lft
-	local gear_pitch=4900*9.81*(0.1*(1-(get(gear1_deploy) or 0))+0.45*(1-(get(gear2_deploy) or 0))+0.45*(1-(get(gear3_deploy) or 0)))
-	if tas>80 then --better pushback fix
-		set(pitch_add,engine_pitch+gear_pitch)
+	local lift_tot=(get(lift_left)+get(lift_right))/2*q -- scaled by q, matches M exactly
+	local lft=interpolate(engine_lift_tbl2,lift_tot)
+	local engine_pitch=80000*0.05*9.81*2.6*(1.45*(r_1+r_3)/100000)*spd*lft
+	if tas>60 then
+		set(pitch_add,engine_pitch)
 	end
 	set(cl, flap1_cl)
 	set(cl2, flap2_cl)
