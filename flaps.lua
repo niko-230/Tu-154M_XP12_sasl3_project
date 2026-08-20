@@ -249,7 +249,7 @@ local slats_spd = 1/18
 local slats_prev = 0
 
 local stab_pos_now = get(stab_ratio) * 5.5 -- 0 - 5.5 degrees
-local stab_pos_cmd = stab_pos_now
+local stab_pos_cmd = stab_pos_now -- target position for auto-coupling (cmd/drive pattern, matches M donor architecture)
 local stab_dirr = 0
 local flaps_lever_last = get(flaps_lever)
 local flap_lever_sw=0
@@ -531,28 +531,49 @@ if MASTER then
 	local stab_move_act=0
 
 	if get(stab_man_cap) == 0 and get(stab_automatic_fail) == 0 then -- automatic controls and no automatic fails
+		-- PORTED (2026-08-20) from real M donor controls/flaps.lua:
+		-- Use cmd/drive pattern identical to M's real code. stab_pos_cmd is set once when
+		-- the lever moves, then stab drives toward it. Trigger: lever moving ahead of actual
+		-- flap position (not waiting for flap_pos>25). Values converted to Target's internal
+		-- 0-5.5 space: 0°=0.0, 1.5°=0.0(floor), 3°=2.0625, 5.5°=5.5 (see calculation above).
 		local stab_set = get(stab_setting)
-		if flap_lever_pos>2 or flap_pos_L_last>25 then
-			if stab_dirr ==1 then
-				if flap_pos_L_last<31 then
-					-- takeoff stage (flap 15/28): CG-dependent target from real M table
-					stab_move=bool2int(stab_pos_now < mkv_takeoff(stab_set))
-				else
-					-- landing stage (flap 36/45): also CG-dependent per real M table
-					-- FIXED (2026-08-20): previous code always used 5.5° here regardless of CG;
-					-- real M table shows 5.5° only for CG<24%, 3° for CG 24-32%, 0° for CG>32%.
-					stab_move=bool2int(stab_pos_now < mkv_landing(stab_set))
-				end
-			elseif stab_dirr ==-1 then
-				if flap_pos_L_last<44 then
-					-- retraction direction: same CG-dependent targets as extension
-					stab_move=-bool2int(stab_pos_now >= mkv_takeoff(stab_set))
-				end
-			end
-		else
-			stab_move=-bool2int(stab_pos_now >0)
+		local lever_moved_dir = 0
+		if flap_lever_pos > flap_pos_L_last + 0.1 and flap_lever_pos > flap_pos_R_last + 0.1 then
+			lever_moved_dir = 1
+		elseif flap_lever_pos < flap_pos_L_last - 0.1 and flap_lever_pos < flap_pos_R_last - 0.1 then
+			lever_moved_dir = -1
 		end
-		stab_move_act=stab_move	
+
+		if lever_moved_dir == 1 then
+			if flap_lever_pos >= 15 and flap_lever_pos <= 28 then
+				-- takeoff stage: CG-dependent (internal-space values, real M table converted)
+				if stab_set == 2 then stab_pos_cmd = 2.0625  -- П, CG<24%: 3° physical
+				elseif stab_set == 1 then stab_pos_cmd = 0.0  -- С, CG 24-32%: 1.5° = baseline
+				else stab_pos_cmd = 0.0 end                   -- З, CG>32%: 0° = baseline
+			elseif flap_lever_pos >= 36 and flap_pos_L_last >= 31 and flap_pos_R_last >= 31 then
+				-- landing stage: CG-dependent (internal-space values, real M table converted)
+				if stab_set == 2 then stab_pos_cmd = 5.5      -- П, CG<24%: 5.5° = max
+				elseif stab_set == 1 then stab_pos_cmd = 2.0625  -- С, CG 24-32%: 3° physical
+				else stab_pos_cmd = 0.0 end                   -- З, CG>32%: baseline
+			end
+		elseif lever_moved_dir == -1 then
+			if flap_lever_pos <= 28 and flap_pos_L_last <= 34 and flap_pos_R_last <= 34 then
+				if stab_set == 2 then stab_pos_cmd = 2.0625
+				elseif stab_set == 1 then stab_pos_cmd = 0.0
+				else stab_pos_cmd = 0.0 end
+			end
+		end
+
+		if flap_lever_pos < 5 and flap_pos_L_last < 25 and flap_pos_R_last < 25 then
+			stab_pos_cmd = 0  -- flight (cruise) position: stab returns to baseline
+		end
+
+		if stab_pos_cmd > stab_pos_now + 0.01 then stab_dirr = 1
+		elseif stab_pos_cmd < stab_pos_now then stab_dirr = -1
+		else stab_dirr = 0 end
+
+		stab_move = stab_dirr
+		stab_move_act = stab_move
 	elseif get(stab_man_cap) == 1 then -- manual stab control
 		stab_move_act = get(stab_manual)
 	end
