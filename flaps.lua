@@ -92,9 +92,14 @@ local panel_x=-0.0023969451
 local panel_z=-22.866001
 local dist_gain=5
 
-local mkv_1=1.5
-local mkv_2=3
-local mkv_3=5.5
+-- FIXED (2026-08-20): stab targets corrected to real M table values (internal 0-5.5 space).
+-- internal 0 = physical 1.5° nose-up (baseline), internal 5.5 = 5.5° nose-up (max).
+-- Real table: С takeoff (flap 15/28) = 1.5° physical = 0 internal (baseline, no movement).
+-- Previous mkv_1=1.5 (internal) was driving stab to 2.59° physical at flap 15 = +1.09° extra
+-- nose-up vs baseline, directly causing the flap-15 balloon at high deployment speeds.
+local mkv_1=0     -- С selector takeoff: 1.5° physical = 0 internal = baseline (no stab movement)
+local mkv_2=2.0625 -- П selector takeoff: 3° physical = 2.0625 internal (was wrong: 3 internal = 3.68°)
+local mkv_3=5.5   -- max (both selectors at landing: П=5.5° max, but landing handled separately)
 
 local function inn_balance (src_x, src_z, x, z , cam_hdg)
 
