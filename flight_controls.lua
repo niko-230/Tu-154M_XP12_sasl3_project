@@ -542,13 +542,7 @@ end
 	local stab_pos = get(stab_ratio)
 	-- elevator effectiveness as a function of stab AoA (XP apparently doesn't model this correctly)
 	
-	-- FIXED (2026-08-19): stab range updated to real M values (-1.5° to -5.5°, span 4.0°).
-	-- Old formula used B's span (5.5°): stab_pos*5.5+1.5 → at stab_ratio=+1 gave 7.0° (wrong).
-	-- M correct: stab_ratio (+1=aft=-5.5°, -1=fwd=-1.5°), so physical deflection = 1.5+stab_pos*2.0
-	-- (stab_ratio=0 → 1.5° baseline; stab_ratio=+1 → 3.5°... no, let's use the direct mapping:
-	-- stab physical angle (deg, positive=nose-up) = 1.5 + (stab_pos+1)/2*4.0 = 1.5 + stab_pos*2.0 + 2.0
-	-- = 3.5 + stab_pos*2.0 ... at ratio=+1 → 5.5°, at ratio=-1 → 1.5°. Correct for M's real range.
-	local stab_aoa=get(ua)-(3.5+stab_pos*2.0)
+	local stab_aoa=get(ua)-(stab_pos*5.5+1.5)
 	if pitch_pos_act<0 then
 		stab_aoa=-stab_aoa
 	end
