@@ -68,6 +68,14 @@ defineProperty("kitchen_load", globalProperty("sim/flightmodel/weight/m_stations
 -- should actually be usable (a real cargo/crew hold), it needs its own control + calc_CG wiring,
 -- not just zeroing -- ask if that's wanted.
 defineProperty("kitch_crew_load", globalProperty("sim/flightmodel/weight/m_stations[3]"))
+defineProperty("weight_total_kg", globalPropertyf("sim/flightmodel/weight/m_total"))
+-- VAPP datarefs written by vapp_calc.lua (must be registered as a module in main.lua)
+defineProperty("vapp_0_dr",  globalPropertyf("tu154b2/custom/efb/vapp_0"))
+defineProperty("vapp_15_dr", globalPropertyf("tu154b2/custom/efb/vapp_15"))
+defineProperty("vapp_28_dr", globalPropertyf("tu154b2/custom/efb/vapp_28"))
+defineProperty("vapp_36_dr", globalPropertyf("tu154b2/custom/efb/vapp_36"))
+defineProperty("vapp_45_dr", globalPropertyf("tu154b2/custom/efb/vapp_45"))
+
 defineProperty("pax1", globalProperty("sim/flightmodel/weight/m_stations[4]")) 
 defineProperty("pax2", globalProperty("sim/flightmodel/weight/m_stations[5]")) 
 defineProperty("pax3", globalProperty("sim/flightmodel/weight/m_stations[6]")) 
@@ -2144,5 +2152,82 @@ components = {
 	
 	
 	
+	-- ============================================================
+	-- VAPP TABLE (dynamic, from vapp_calc.lua + real 1997 PDF table)
+	-- shows recommended approach speeds for current landing mass
+	-- at all 5 flap detents — updates live every frame
+	-- ============================================================
+
+	-- background box
+	rectangle {
+		position = {650, 380, 360, 295},
+		color = {0.85, 0.95, 0.85, 1},
+	},
+
+	-- header label
+	text_draw {
+		position = {655, 655, 350, 25},
+		color = {0, 0, 0.5, 1},
+		text = function()
+			local mass_t = math.floor((get(weight_total_kg) or 0) / 100 + 0.5) / 10
+			return string.format("Vзп  (масса: %.1f т)", mass_t)
+		end,
+	},
+
+	-- flap 0
+	text_draw {
+		position = {655, 625, 350, 22},
+		color = {0, 0, 0, 1},
+		text = function()
+			return string.format("Закрылки  0°:   %d км/ч", math.floor(get(vapp_0_dr) or 0))
+		end,
+	},
+
+	-- flap 15
+	text_draw {
+		position = {655, 595, 350, 22},
+		color = {0, 0, 0, 1},
+		text = function()
+			return string.format("Закрылки 15°:  %d км/ч", math.floor(get(vapp_15_dr) or 0))
+		end,
+	},
+
+	-- flap 28
+	text_draw {
+		position = {655, 565, 350, 22},
+		color = {0, 0, 0, 1},
+		text = function()
+			return string.format("Закрылки 28°:  %d км/ч", math.floor(get(vapp_28_dr) or 0))
+		end,
+	},
+
+	-- flap 36
+	text_draw {
+		position = {655, 535, 350, 22},
+		color = {0, 0, 0, 1},
+		text = function()
+			return string.format("Закрылки 36°:  %d км/ч", math.floor(get(vapp_36_dr) or 0))
+		end,
+	},
+
+	-- flap 45
+	text_draw {
+		position = {655, 505, 350, 22},
+		color = {0, 0, 0.6, 1},
+		text = function()
+			return string.format("Закрылки 45°:  %d км/ч", math.floor(get(vapp_45_dr) or 0))
+		end,
+	},
+
+	-- divider line + source note
+	text_draw {
+		position = {655, 475, 350, 18},
+		color = {0.3, 0.3, 0.3, 1},
+		text = function()
+			return "Источник: РЛЭ Ту-154М 1997, пред.выпущены"
+		end,
+	},
+
+
 }
 
