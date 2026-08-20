@@ -92,9 +92,24 @@ local panel_x=-0.0023969451
 local panel_z=-22.866001
 local dist_gain=5
 
-local mkv_1=1.5
-local mkv_2=3
-local mkv_3=5.5
+-- FIXED (2026-08-20): stab targets corrected to real M table values from
+-- "Углы согласованного отклонения средств механизации и стабилизатора"
+-- (1997 aerodynamics PDF, user-uploaded). ALL stages are CG-dependent.
+-- stab_setting: 0=З(>32%MAC), 1=С(24-32%MAC), 2=П(<24%MAC)
+-- Takeoff (flap 15° AND 28°): П→3°, С→1.5°, З→0°
+-- Landing (flap 36° AND 45°): П→5.5°, С→3°, З→0°
+-- Previous comment claiming "M only lets CG affect the intermediate stage" was WRONG --
+-- confirmed by real РЛЭ table: landing stage (36/45) is also CG-dependent.
+local function mkv_takeoff(stab_set)
+	if stab_set == 2 then return 3.0   -- П, CG < 24% MAC
+	elseif stab_set == 1 then return 1.5 -- С, CG 24-32% MAC
+	else return 0.0 end                -- З, CG > 32% MAC
+end
+local function mkv_landing(stab_set)
+	if stab_set == 2 then return 5.5   -- П, CG < 24% MAC
+	elseif stab_set == 1 then return 3.0 -- С, CG 24-32% MAC
+	else return 0.0 end                -- З, CG > 32% MAC
+end
 
 local function inn_balance (src_x, src_z, x, z , cam_hdg)
 
@@ -520,27 +535,18 @@ if MASTER then
 		if flap_lever_pos>2 or flap_pos_L_last>25 then
 			if stab_dirr ==1 then
 				if flap_pos_L_last<31 then
-					if stab_set == 2 then
-						stab_move=bool2int(stab_pos_now < mkv_2)
-					elseif stab_set == 1 then
-						stab_move=bool2int(stab_pos_now < mkv_1)
-					end
+					-- takeoff stage (flap 15/28): CG-dependent target from real M table
+					stab_move=bool2int(stab_pos_now < mkv_takeoff(stab_set))
 				else
-					-- FIXED (2026-08-18): real M behavior at final flap stage (36/45deg) --
-					-- APS always drives stab to max (-5.5) regardless of CG setting. B's real
-					-- behavior (what this branch used to implement) keeps CG-dependency all the
-					-- way to full flap; M only lets CG affect the intermediate stage above.
-					stab_move=bool2int(stab_pos_now < mkv_3)
+					-- landing stage (flap 36/45): also CG-dependent per real M table
+					-- FIXED (2026-08-20): previous code always used 5.5° here regardless of CG;
+					-- real M table shows 5.5° only for CG<24%, 3° for CG 24-32%, 0° for CG>32%.
+					stab_move=bool2int(stab_pos_now < mkv_landing(stab_set))
 				end
 			elseif stab_dirr ==-1 then
 				if flap_pos_L_last<44 then
-					if stab_set == 2 then
-						stab_move=-bool2int(stab_pos_now >= mkv_2)
-					elseif stab_set == 1 then
-						stab_move=-bool2int(stab_pos_now >= mkv_1)
-					elseif stab_set == 0 then
-						stab_move=-bool2int(stab_pos_now > 0)
-					end
+					-- retraction direction: same CG-dependent targets as extension
+					stab_move=-bool2int(stab_pos_now >= mkv_takeoff(stab_set))
 				end
 			end
 		else
