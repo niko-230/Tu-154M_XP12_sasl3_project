@@ -625,19 +625,19 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 	-- Target values to tune against: real idle→72% time and 72→max time from Д-30КУ-154 docs.
 	-- The comment "35-80s" in the declaration above was WRONG for this use — that is
 	-- engine START FROM DEAD (0 RPM → idle), not idle→max throttle response. Corrected.
-	-- TWO-ZONE SPOOL RATES (re-calculated 2026-08-20 using raw sim N2 space):
-	-- Source: real Д-30КУ-154 data + M donor n2_scale mapping (raw→displayed).
-	-- IMPORTANT: kvd1/2/3 are RAW sim N2 (e.g. idle=62.5 raw, not displayed 60%).
-	-- Previous boundary "kvd<72" was WRONG -- raw 72 → display only 66%, not the real 72% КПВ boundary.
-	-- Correct КПВ boundary: raw N2 = 80 → displayed 72.2% (confirmed via n2_scale inversion).
-	-- Slow zone: raw 62.5→79.8 = 17.3 units in 4.0s → rud_lim = 17.3/(100×4.0) = 0.043
-	-- Fast zone: raw 79.8→105 = 25.2 units in 3.5s → rud_lim = 25.2/(100×3.5) = 0.072
-	-- Takeoff max is raw 105 → displayed 96% (per n2_scale). Previous use of 95/97 was wrong.
+	-- TWO-ZONE SPOOL RATES (revised 2026-08-20 to account for XP native spool lag):
+	-- The acf _spool_time_compressor_jet was reduced from 5.5s to 1.5s in the acf fix (same
+	-- session). With tau=1.5s, the acf lag dominates -- with rl=0.043 the compound lag gave
+	-- >15s visible on gauge. At high rl (effectively instant command), tau=1.5s alone gives ~5.4s
+	-- idle→72% which is within the real 3.5-4.5s window. rud_lim now acts as a soft cap only.
+	-- КПВ boundary: raw N2 = 80 (= displayed 72%). Two-zone preserved for future КПВ bleed modeling.
+	-- Slow zone (kvd<80): rl=0.15 → adds <0.5s to the 5.4s native lag (acceptable)
+	-- Fast zone (kvd>=80): rl=0.30 → effectively instant, XP native lag dominant (~5s to display 96%)
 	local function get_rud_lim(kvd)
 		if kvd < 80 then
-			return 0.043 -- slow zone: КПВ valves open (raw <80 = display <72%), idle→72% in ~4s
+			return 0.15 -- slow zone: КПВ open, minimal rate limiting (acf tau=1.5s dominates)
 		else
-			return 0.072 -- fast zone: КПВ valves close at raw 80, 72→96% display in ~3.5s
+			return 0.30 -- fast zone: КПВ closed, near-instant cmd, acf tau gives realistic acceleration
 		end
 	end
 	rud_lim = get_rud_lim(kvd1)

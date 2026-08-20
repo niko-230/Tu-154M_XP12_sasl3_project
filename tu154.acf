@@ -48257,7 +48257,7 @@ P acf/_spoi2_v2 0.000000000
 P acf/_spoi2_with_flit_sbrk 0.000000000
 P acf/_spoi2_with_grnd_pitch 0.000000000
 P acf/_spoi2_with_grnd_sbrk 0.000000000
-P acf/_spool_time_compressor_jet 5.500000000
+P acf/_spool_time_compressor_jet 1.500000000
 P acf/_spool_time_compressor_prop 6.000000000
 P acf/_spot1_3d_rgb/0 0.000000000
 P acf/_spot1_3d_rgb/1 0.899999976
@@ -48469,7 +48469,7 @@ P acf/_thro_x_ctr 0.000000000
 P acf/_throt_max_fwd_emr 1.000000000
 P acf/_throt_max_fwd_nrm 1.000000000
 P acf/_throt_max_rev 0.800000012
-P acf/_throt_time_jet 1.000000000
+P acf/_throt_time_jet 0.500000000
 P acf/_throt_time_prop 0.500000000
 P acf/_throttle_drives_EPR 0
 P acf/_throttle_drives_N2 1
