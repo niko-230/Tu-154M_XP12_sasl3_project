@@ -47668,7 +47668,7 @@ P acf/_ground_pwr/2 0.000000000
 P acf/_ground_pwr/count 3
 P acf/_gyro_spooldown_time 60.000000000
 P acf/_gyro_spoolup_time 5.000000000
-P acf/_h_eqlbm 12.613480568
+P acf/_h_eqlbm 12.747026443
 P acf/_has_ADG 0
 P acf/_has_APU_bleed_air 1
 P acf/_has_APU_generator 1
@@ -48463,7 +48463,7 @@ P acf/_tat_probes/0 0
 P acf/_tat_probes/1 0
 P acf/_tat_probes/2 0
 P acf/_tat_probes/count 3
-P acf/_the_eqlbm 0.583902240
+P acf/_the_eqlbm 0.420217961
 P acf/_thro_non_vect_props_at_sin_vect 0
 P acf/_thro_x_ctr 0.000000000
 P acf/_throt_max_fwd_emr 1.000000000

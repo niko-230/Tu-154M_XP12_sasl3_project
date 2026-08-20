@@ -262,6 +262,12 @@ local stab_stall_tbl = {
 {400, 0.2}}
 
 
+function line(x, x0, x1, y0, y1)
+	if x <= x0 then return y0 end
+	if x >= x1 then return y1 end
+	return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+end
+
 function update()
 	set(overr, 1)
 	
@@ -318,9 +324,13 @@ function update()
 	--if HS1 > 0.1 or HS2 > 0.1 or HS3 > 0.1 then
 	roll_pos_act = roll_pos_act + (roll_cmd - roll_pos_act) * math.max(HS1 * buster_1_ON, HS2 * buster_2_ON, HS3 * buster_3_ON) * passed * 7
 	--end
-	local ail_corr=1.811854198223174 -0.002079941808742*math.max(ias,220) + -0.398752865107136*mach--  correct aileron effectivness to match RW data
-	local left_ail_pos = roll_pos_act * 20*ail_corr-- * line(mach, 0, 1, 0.8, 0.5) -- can add failures here
-	local right_ail_pos = -roll_pos_act * 20*ail_corr-- * line(mach, 0, 1, 0.8, 0.5) -- can add failures here
+	-- FIXED (2026-08-20): replaced B-tuned ail_corr formula with M donor's real mechanism.
+	-- M donor (controls/flight_controls.lua line 296): line(mach, 0, 1, 0.8, 0.5)
+	-- At Mach 0.3 (climb): M=14.2° vs old formula=24.7° — 75% more deflection was causing
+	-- sharper/harder banking than real M. Cruise (~Mach 0.78): both give ~11.3°, consistent.
+	local ail_corr = line(mach, 0, 1, 0.8, 0.5)  -- M donor's real mach-based aileron scaling
+	local left_ail_pos = roll_pos_act * 20 * ail_corr
+	local right_ail_pos = -roll_pos_act * 20 * ail_corr
 	
 	local roll_sp_L = 0
 	if left_ail_pos <= -1.5 then roll_sp_L = -((left_ail_pos + 1.5) / 18.5) * 45 end
@@ -542,23 +552,13 @@ end
 	local stab_pos = get(stab_ratio)
 	-- elevator effectiveness as a function of stab AoA (XP apparently doesn't model this correctly)
 	
-	-- FIXED (2026-08-19): stab range updated to real M values (-1.5° to -5.5°, span 4.0°).
-	-- Old formula used B's span (5.5°): stab_pos*5.5+1.5 → at stab_ratio=+1 gave 7.0° (wrong).
-	-- M correct: stab_ratio (+1=aft=-5.5°, -1=fwd=-1.5°), so physical deflection = 1.5+stab_pos*2.0
-	-- (stab_ratio=0 → 1.5° baseline; stab_ratio=+1 → 3.5°... no, let's use the direct mapping:
-	-- stab physical angle (deg, positive=nose-up) = 1.5 + (stab_pos+1)/2*4.0 = 1.5 + stab_pos*2.0 + 2.0
-	-- = 3.5 + stab_pos*2.0 ... at ratio=+1 → 5.5°, at ratio=-1 → 1.5°. Correct for M's real range.
-	local stab_aoa=get(ua)-(3.5+stab_pos*2.0)
-	if pitch_pos_act<0 then
-		stab_aoa=-stab_aoa
-	end
-	elev_coef = -0.04408*stab_aoa + 0.6595
-	if elev_coef>1 then
-		elev_coef=1
-	elseif elev_coef<0.45 then
-		elev_coef=0.45
-	end
-	elev_coef=elev_coef*interpolate(stab_stall_tbl,get(ua))-- reduce effectiveness with stalling stab
+	-- FIXED (2026-08-20): replaced dynamic stab_aoa-based elev_coef with M donor's
+	-- real value. M donor's flight_controls.lua uses a flat elev_coef=0.6 — no dynamic
+	-- stab_aoa dependency at all (confirmed via direct diff). The old dynamic formula
+	-- was reducing elev_coef exactly when stab moves nose-up (flap 15 deployment),
+	-- cutting elevator authority right when needed most → balloon. M's 0.6 is constant
+	-- and provides consistent authority regardless of stab position.
+	elev_coef = 0.6
 	local elev_left = 0 
 	local elev_right = 0 
 	local elev_left_c = 0 
