@@ -617,14 +617,22 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 	-- rud_lim_2=interpolate(rud_lim_tbl,kvd2)*get(db1)
 	-- rud_lim_3=interpolate(rud_lim_tbl,kvd3)*get(db1)
 	-- set(db2,rud_lim_2)
-	-- REVERTED (2026-08-19): the per-engine tiered ramp (0.05-0.11) below was tuned by feel,
-	-- not from M. Fresh check of M's own real code shows a single FLAT rud_lim=0.03 shared by
-	-- all three engines, both up and down near idle -- explicitly anchored to the real РЛЭ
-	-- spool-time range (35-80s, typical ~50s; 0.03 targets ~33s full sweep, see the declaration
-	-- comment above). Target's tuned 0.05-0.11 was roughly 2-4x faster than this. Matches M's
-	-- real mechanism exactly now -- single shared rud_lim, no per-engine split, no down-direction
-	-- decouple, no ramp table.
-	rud_lim=0.03
+	-- TWO-ZONE SPOOL RATE (2026-08-20): Д-30КУ-154 real characteristic confirmed by user.
+	-- Two distinct zones per engine_gauges.lua comment + real behavior reported in flight tests:
+	-- Zone 1 (kvd < 72%): slow ramp — idle/startup zone, slow fuel scheduling. 
+	-- Zone 2 (kvd >= 72%): faster ramp — flight power zone, normal acceleration.
+	-- NOTE: These rates are CALIBRATED PLACEHOLDERS pending real РЛЭ acceleration-time data.
+	-- Target values to tune against: real idle→72% time and 72→max time from Д-30КУ-154 docs.
+	-- The comment "35-80s" in the declaration above was WRONG for this use — that is
+	-- engine START FROM DEAD (0 RPM → idle), not idle→max throttle response. Corrected.
+	local function get_rud_lim(kvd)
+		if kvd < 72 then
+			return 0.02 -- slow zone: idle startup (tune with real idle→72% time)
+		else
+			return 0.05 -- fast zone: power zone (tune with real 72→max time)
+		end
+	end
+	rud_lim = get_rud_lim(kvd1) -- engine 1 rate (dominant, engines track together in normal ops)
 	local idle_lim_1=2*bool2int(kvd1>55.5-spread_coeff/2-1.3)
 	if kvd1<55.5-spread_coeff/2-idle_lim_1 then
 		contr_1_spd=-rud_lim
@@ -648,21 +656,12 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 	if kvd3<min_idle then
 		contr_3_spd=math.min(contr_3_spd,rud_lim/(1+alt_baro/2000))
 	end	
-	if contr_1_spd>rud_lim then
-		contr_1_spd=rud_lim
-	-- elseif contr_1_spd<-rud_lim then
-		-- contr_1_spd=-rud_lim
-	end	
-	if contr_2_spd>rud_lim then
-		contr_2_spd=rud_lim
-	-- elseif contr_2_spd<-rud_lim then
-		-- contr_2_spd=-rud_lim
-	end
-	if contr_3_spd>rud_lim then
-		contr_3_spd=rud_lim
-	-- elseif contr_3_spd<-rud_lim then
-		-- contr_3_spd=-rud_lim
-	end
+	local rl1=get_rud_lim(kvd1)
+	local rl2=get_rud_lim(kvd2)
+	local rl3=get_rud_lim(kvd3)
+	if contr_1_spd>rl1 then contr_1_spd=rl1 end
+	if contr_2_spd>rl2 then contr_2_spd=rl2 end
+	if contr_3_spd>rl3 then contr_3_spd=rl3 end
 	kvd1_prev=kvd1
 	kvd2_prev=kvd2
 	kvd3_prev=kvd3
