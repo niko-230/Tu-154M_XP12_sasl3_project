@@ -273,24 +273,6 @@ local c_turb3=1
 
 local delta_rpm_1=0
 
--- N2 (КВД) display calibration table -- ported from M donor engine_gauges.lua (2026-08-20)
--- Maps raw sim N2 → real РЛЭ-calibrated displayed N2 (matching real Д-30КУ-154 specs)
--- Anchored to: idle=59.7%, 0.9nominal=84%, nominal=89%, takeoff=94-96%
--- Without this table, front panel shows raw sim N2 (e.g. 91%) instead of real calibrated value (e.g. 84%)
-local n2_scale = {
-	{  0,    0   },
-	{ 20,   18   },
-	{ 62,   59.7 },  -- малый газ земля: sim 62 → РЛЭ 59.5-61.5%
-	{ 75,   68   },  -- ~0.6 nominal lower
-	{ 81,   73   },  -- between 0.6 and 0.7 nominal
-	{ 86,   79   },  -- ~0.7-0.9 nominal
-	{ 90,   84   },  -- ~0.9 nominal upper
-	{ 94,   89   },  -- ~nominal
-	{ 99,   94   },  -- takeoff lower
-	{105,   96   },  -- takeoff upper (РЛЭ 94.5-96.0%)
-	{112,  98.5  },  -- КВД max per РЛЭ (98.5%)
-	{200,  98.5  },
-}
 local delta_rpm_2=0
 local delta_rpm_3=0
 
@@ -976,7 +958,7 @@ if MASTER then
 	else
 		eng1_1_ang_act = eng1_1_ang_act + (eng1_N1_need+(-0.145*math.pow(eng1_N1_need,2)+2.425*eng1_N1_need-8.313 )*0.2*math.sin(20*tme)*bool2int(eng1_N1_need>5 and eng1_N1_need<12) - eng1_1_ang_act) * passed *10 --(10-bool2int(rpm_1<55 and rpm_1>14 and (rpm_1-rpm_1_last)>0)*8.5)
 	end
-	set(rpm_high_1, interpolate(n2_scale, eng1_1_ang_act)) -- calibrated per real Д-30КУ-154 n2_scale
+	set(rpm_high_1, interpolate({{0,0},{20,18},{62,59.7},{75,68},{81,73},{86,79},{90,84},{94,89},{99,94},{105,96},{112,98.5},{200,98.5}}, eng1_1_ang_act)) -- РЛЭ-calibrated N2 display
 	-- Engine2 N2
 	eng2_N1_need=rpm_2
 	-- if get(kpp2_fail)>0 then
@@ -992,7 +974,7 @@ if MASTER then
 	else
 		eng2_1_ang_act = eng2_1_ang_act + (eng2_N1_need+(-0.145*math.pow(eng2_N1_need,2)+2.425*eng2_N1_need-8.313 )*0.17*math.sin(20*tme+1.5)*bool2int(eng2_N1_need>5 and eng2_N1_need<12) - eng2_1_ang_act) * passed * 10
 	end
-	set(rpm_high_2, interpolate(n2_scale, eng2_1_ang_act))
+	set(rpm_high_2, interpolate({{0,0},{20,18},{62,59.7},{75,68},{81,73},{86,79},{90,84},{94,89},{99,94},{105,96},{112,98.5},{200,98.5}}, eng2_1_ang_act))
 	-- Engine3 N2
 	eng3_N1_need=rpm_3
 	if get(kpp3_fail)>0 then
@@ -1013,7 +995,7 @@ if MASTER then
 	else
 		eng3_1_ang_act = eng3_1_ang_act + (eng3_N1_need+(-0.145*math.pow(eng3_N1_need,2)+2.425*eng3_N1_need-8.313 )*0.21*math.sin(19*tme)*bool2int(eng3_N1_need>5 and eng3_N1_need<12) - eng3_1_ang_act) * passed * 10
 	end
-	set(rpm_high_3, interpolate(n2_scale, eng3_1_ang_act))
+	set(rpm_high_3, interpolate({{0,0},{20,18},{62,59.7},{75,68},{81,73},{86,79},{90,84},{94,89},{99,94},{105,96},{112,98.5},{200,98.5}}, eng3_1_ang_act))
 	if passed~=0 then
 		delta_rpm_1=(rpm_1-rpm_1_last)/passed
 	end
