@@ -625,14 +625,21 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 	-- Target values to tune against: real idle→72% time and 72→max time from Д-30КУ-154 docs.
 	-- The comment "35-80s" in the declaration above was WRONG for this use — that is
 	-- engine START FROM DEAD (0 RPM → idle), not idle→max throttle response. Corrected.
+	-- TWO-ZONE SPOOL RATES -- sourced from real Д-30КУ-154 data (user-uploaded, 2026-08-20):
+	-- "Время разгона от режима малый газ до N_ВД=72%: 3,5–4,5 секунды при приемистости на земле"
+	-- "После 72–73% клапаны КПВ закрываются, оставшийся путь до ~95% за 3–4 секунды"
+	-- Ground idle КВД = 59.5–61.5%, boundary 72%, max КВД = 94.5–96.0% (matches thr_max formula ✓)
+	-- N2 rate ≈ 100 × rud_lim %/s (from n2 = 100×contr in linear range)
+	-- Slow zone: 60→72% = 12% in 4s → rud_lim = 12/(100×4) = 0.030
+	-- Fast zone: 72→95% = 23% in 3.5s → rud_lim = 23/(100×3.5) = 0.066
 	local function get_rud_lim(kvd)
 		if kvd < 72 then
-			return 0.02 -- slow zone: idle startup (tune with real idle→72% time)
+			return 0.030 -- slow zone: КПВ valves open, 60→72% in ~4s (real spec: 3.5–4.5s)
 		else
-			return 0.05 -- fast zone: power zone (tune with real 72→max time)
+			return 0.066 -- fast zone: КПВ valves close at 72%, 72→95% in ~3.5s (real spec: 3–4s)
 		end
 	end
-	rud_lim = get_rud_lim(kvd1) -- engine 1 rate (dominant, engines track together in normal ops)
+	rud_lim = get_rud_lim(kvd1)
 	local idle_lim_1=2*bool2int(kvd1>55.5-spread_coeff/2-1.3)
 	if kvd1<55.5-spread_coeff/2-idle_lim_1 then
 		contr_1_spd=-rud_lim
