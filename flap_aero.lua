@@ -227,16 +227,12 @@ function update()
 	local flap1_cl = (6.00e-04*math.pow(flap_inn,2) - 1.30e-02*flap_inn + 1.08) + slat_cl_add
 	local flap2_cl = (7.85e-04*math.pow(flap_out,2) - 1.20e-02*flap_out + 1.18) + slat_cl_add
 
-	-- FIXED (2026-08-20): ported to M's exact formula from M_donor/flap_aero.lua.
-	-- Previous version was missing the * q term in lift_tot, making engine_pitch
-	-- NOT proportional to dynamic pressure (not V^2) -- directly caused "lift not
-	-- relative to speed" symptom. Also corrected formula constants to M's real values
-	-- (0.05 vs 0.05285, 2.6 vs 2.7, 1.45 vs 1.5) and removed gear_pitch term
-	-- (Target's own comment already noted M has no equivalent for this).
-	local q = get(dens) / 2 * math.pow(tas / 3.6, 2) -- dynamic pressure Pa
+	-- Engine pitch moment -- M donor's exact formula (re-applied 2026-08-20 after revert).
+	-- Key fix: lift_tot = lift * q (dynamic pressure), making engine_pitch V^2-proportional.
+	-- Without this, engine nose-up moment is near-constant → balloon at flap 15 at high IAS.
+	-- Constants 0.05/2.6/1.45 match M donor exactly. gear_pitch removed (M has no equivalent).
 	local spd=interpolate(engine_lift_tbl,tas)
-	local lift_tot=(get(lift_left)+get(lift_right))/2*q -- scaled by q, matches M exactly
-	local lft=interpolate(engine_lift_tbl2,lift_tot)
+	local lft=interpolate(engine_lift_tbl2,lift) -- lift already includes *q from line above
 	local engine_pitch=80000*0.05*9.81*2.6*(1.45*(r_1+r_3)/100000)*spd*lft
 	if tas>60 then
 		set(pitch_add,engine_pitch)
