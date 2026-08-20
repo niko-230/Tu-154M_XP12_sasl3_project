@@ -625,18 +625,19 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 	-- Target values to tune against: real idle→72% time and 72→max time from Д-30КУ-154 docs.
 	-- The comment "35-80s" in the declaration above was WRONG for this use — that is
 	-- engine START FROM DEAD (0 RPM → idle), not idle→max throttle response. Corrected.
-	-- TWO-ZONE SPOOL RATES -- sourced from real Д-30КУ-154 data (user-uploaded, 2026-08-20):
-	-- "Время разгона от режима малый газ до N_ВД=72%: 3,5–4,5 секунды при приемистости на земле"
-	-- "После 72–73% клапаны КПВ закрываются, оставшийся путь до ~95% за 3–4 секунды"
-	-- Ground idle КВД = 59.5–61.5%, boundary 72%, max КВД = 94.5–96.0% (matches thr_max formula ✓)
-	-- N2 rate ≈ 100 × rud_lim %/s (from n2 = 100×contr in linear range)
-	-- Slow zone: 60→72% = 12% in 4s → rud_lim = 12/(100×4) = 0.030
-	-- Fast zone: 72→95% = 23% in 3.5s → rud_lim = 23/(100×3.5) = 0.066
+	-- TWO-ZONE SPOOL RATES (re-calculated 2026-08-20 using raw sim N2 space):
+	-- Source: real Д-30КУ-154 data + M donor n2_scale mapping (raw→displayed).
+	-- IMPORTANT: kvd1/2/3 are RAW sim N2 (e.g. idle=62.5 raw, not displayed 60%).
+	-- Previous boundary "kvd<72" was WRONG -- raw 72 → display only 66%, not the real 72% КПВ boundary.
+	-- Correct КПВ boundary: raw N2 = 80 → displayed 72.2% (confirmed via n2_scale inversion).
+	-- Slow zone: raw 62.5→79.8 = 17.3 units in 4.0s → rud_lim = 17.3/(100×4.0) = 0.043
+	-- Fast zone: raw 79.8→105 = 25.2 units in 3.5s → rud_lim = 25.2/(100×3.5) = 0.072
+	-- Takeoff max is raw 105 → displayed 96% (per n2_scale). Previous use of 95/97 was wrong.
 	local function get_rud_lim(kvd)
-		if kvd < 72 then
-			return 0.030 -- slow zone: КПВ valves open, 60→72% in ~4s (real spec: 3.5–4.5s)
+		if kvd < 80 then
+			return 0.043 -- slow zone: КПВ valves open (raw <80 = display <72%), idle→72% in ~4s
 		else
-			return 0.066 -- fast zone: КПВ valves close at 72%, 72→95% in ~3.5s (real spec: 3–4s)
+			return 0.072 -- fast zone: КПВ valves close at raw 80, 72→96% display in ~3.5s
 		end
 	end
 	rud_lim = get_rud_lim(kvd1)

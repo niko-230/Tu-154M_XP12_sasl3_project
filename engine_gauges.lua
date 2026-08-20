@@ -272,6 +272,25 @@ local c_turb2=1
 local c_turb3=1
 
 local delta_rpm_1=0
+
+-- N2 (КВД) display calibration table -- ported from M donor engine_gauges.lua (2026-08-20)
+-- Maps raw sim N2 → real РЛЭ-calibrated displayed N2 (matching real Д-30КУ-154 specs)
+-- Anchored to: idle=59.7%, 0.9nominal=84%, nominal=89%, takeoff=94-96%
+-- Without this table, front panel shows raw sim N2 (e.g. 91%) instead of real calibrated value (e.g. 84%)
+local n2_scale = {
+	{  0,    0   },
+	{ 20,   18   },
+	{ 62,   59.7 },  -- малый газ земля: sim 62 → РЛЭ 59.5-61.5%
+	{ 75,   68   },  -- ~0.6 nominal lower
+	{ 81,   73   },  -- between 0.6 and 0.7 nominal
+	{ 86,   79   },  -- ~0.7-0.9 nominal
+	{ 90,   84   },  -- ~0.9 nominal upper
+	{ 94,   89   },  -- ~nominal
+	{ 99,   94   },  -- takeoff lower
+	{105,   96   },  -- takeoff upper (РЛЭ 94.5-96.0%)
+	{112,  98.5  },  -- КВД max per РЛЭ (98.5%)
+	{200,  98.5  },
+}
 local delta_rpm_2=0
 local delta_rpm_3=0
 
@@ -785,18 +804,23 @@ rev_tbl = {{0, 0 },
 			{  98,95 }} 		
 
 	
+-- M's real table (was missing the 45% breakpoint): starter disconnects at 45% N2 (per РЛЭ),
+-- engine independently reaches idle after 45%, this blend stays at 0 until then.
 local n1_start_corr_tbl_1 = {{ -100000, 0.0 },
                   {  0, 0 },
+                  {  45, 0 },
 				  {  55, 1 }, 
           	      {  1000000000, 1 }}    -- bugs walkaround		
 			  
 
+-- M's real values (was B's untuned table): tail engine (#2) has a longer S-duct,
+-- N1 correction differs at each breakpoint from the wing engines' correction.
 local eng2_n1_corr_tbl = {{ -100000, 0.0 },    -- bugs walkaround
-					{  55, 0.5 },
-					{  78, 0.5 },
-					{  86, 1 },
-					{  92, 0.75 }, 				
-					{  1000, 0.5 }} 
+					{  55, 0.6 },
+					{  80, 0.6 },
+					{  88, 1.1 },
+					{  94, 0.8 }, 				
+					{  1000, 0.6 }} 
 					
 kpp_fail_table = {{ -100000, 0.0 },
                   {  0, 00 },
@@ -840,16 +864,23 @@ local n2_M_rot=1.0 -- KVD rotor mass, calibrated to ~40s to idle (M-tuned)
 
 local fan_1=math.random()*360
 local fan_3=math.random()*360
-local rpm_knd=5900/0.97 --rpm @ 100% N1		 
+local rpm_knd=6200/0.97 -- M's real value: КНД rpm at 100% N1 (Д-30 slightly higher than НК-8)
 
 local needle_1_move=0
 local needle_2_move=0
 local needle_3_move=0
 
+-- Idle-region correction table (2026-08-18): the raw polynomial below was confirmed, by direct
+-- numeric evaluation, to over-predict N1 specifically near idle -- 41.9% at real N2=60.5 idle vs
+-- the real РЛЭ target of 30% (an 11.9-point error), while only ~3 points off by N2=78 and N2=97.
+-- Tapers the correction from the full idle error down to 0 by N2=78 (real flight-idle reference),
+-- leaving the rest of the curve (already only mildly off) untouched.
+local n1_idle_corr_tbl = {{-1000,11.9},{55,11.9},{60.5,11.9},{78,0},{200,0}}
 local function n1_from_n2 (rpm,d_isa,altitude,tas)
 	--local knd=2.27883656454638781896e-02 + 1.48521461357922052691e-03*d_isa + 2.85578535694455237781e-01*rpm -9.80969385717822827146e-05*d_isa*rpm + 5.06556388550356579553e-03*math.pow(rpm,2) -1.81250059943665734515e-05*d_isa*math.pow(rpm,2) + 2.76277805413032983845e-05*math.pow(rpm,3)
 	local knd=1.35432317320705628561e+01 + 1.05818030992323813821e-01*d_isa -2.41159426273638954896e-01*rpm -2.88293089248683933462e-03*d_isa*rpm + 1.17362636037093952257e-02*math.pow(rpm,2)
 	knd=knd+math.max(-2.69166791400897068343e+02 + 2.22049699099214983278e+01*altitude + 1.46945301863934254527e+01*rpm -9.85089687252083234803e-01*altitude*rpm -2.96261417738032106772e-01*math.pow(rpm,2) + 1.41929325403952685813e-02*altitude*math.pow(rpm,2) + 2.61617340318329736140e-03*math.pow(rpm,3) -6.56641350639726608220e-05*altitude*math.pow(rpm,3) -8.54680990421439715666e-06*math.pow(rpm,4),0)*tas/850
+	knd=knd-interpolate(n1_idle_corr_tbl,rpm)
 	--math.max(2.55665280454449340030e-16 -9.80392156862750505444e-04*tas + 6.66666666666667073748e-01*alt,0)-- altitude correction
 	--set(db1,math.max(-2.69166791400897068343e+02 + 2.22049699099214983278e+01*altitude + 1.46945301863934254527e+01*rpm -9.85089687252083234803e-01*altitude*rpm -2.96261417738032106772e-01*math.pow(rpm,2) + 1.41929325403952685813e-02*altitude*math.pow(rpm,2) + 2.61617340318329736140e-03*math.pow(rpm,3) -6.56641350639726608220e-05*altitude*math.pow(rpm,3) -8.54680990421439715666e-06*math.pow(rpm,4),0)*tas/850)
 	return knd
@@ -945,7 +976,7 @@ if MASTER then
 	else
 		eng1_1_ang_act = eng1_1_ang_act + (eng1_N1_need+(-0.145*math.pow(eng1_N1_need,2)+2.425*eng1_N1_need-8.313 )*0.2*math.sin(20*tme)*bool2int(eng1_N1_need>5 and eng1_N1_need<12) - eng1_1_ang_act) * passed *10 --(10-bool2int(rpm_1<55 and rpm_1>14 and (rpm_1-rpm_1_last)>0)*8.5)
 	end
-	set(rpm_high_1, eng1_1_ang_act)
+	set(rpm_high_1, interpolate(n2_scale, eng1_1_ang_act)) -- calibrated per real Д-30КУ-154 n2_scale
 	-- Engine2 N2
 	eng2_N1_need=rpm_2
 	-- if get(kpp2_fail)>0 then
@@ -961,7 +992,7 @@ if MASTER then
 	else
 		eng2_1_ang_act = eng2_1_ang_act + (eng2_N1_need+(-0.145*math.pow(eng2_N1_need,2)+2.425*eng2_N1_need-8.313 )*0.17*math.sin(20*tme+1.5)*bool2int(eng2_N1_need>5 and eng2_N1_need<12) - eng2_1_ang_act) * passed * 10
 	end
-	set(rpm_high_2, eng2_1_ang_act)
+	set(rpm_high_2, interpolate(n2_scale, eng2_1_ang_act))
 	-- Engine3 N2
 	eng3_N1_need=rpm_3
 	if get(kpp3_fail)>0 then
@@ -982,7 +1013,7 @@ if MASTER then
 	else
 		eng3_1_ang_act = eng3_1_ang_act + (eng3_N1_need+(-0.145*math.pow(eng3_N1_need,2)+2.425*eng3_N1_need-8.313 )*0.21*math.sin(19*tme)*bool2int(eng3_N1_need>5 and eng3_N1_need<12) - eng3_1_ang_act) * passed * 10
 	end
-	set(rpm_high_3, eng3_1_ang_act)
+	set(rpm_high_3, interpolate(n2_scale, eng3_1_ang_act))
 	if passed~=0 then
 		delta_rpm_1=(rpm_1-rpm_1_last)/passed
 	end
