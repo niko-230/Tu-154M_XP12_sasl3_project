@@ -531,20 +531,35 @@ if MASTER then
 						stab_move=bool2int(stab_pos_now < mkv_1)
 					end
 				else
-					-- FIXED (2026-08-18): real M behavior at final flap stage (36/45deg) --
-					-- APS always drives stab to max (-5.5) regardless of CG setting. B's real
-					-- behavior (what this branch used to implement) keeps CG-dependency all the
-					-- way to full flap; M only lets CG affect the intermediate stage above.
-					stab_move=bool2int(stab_pos_now < mkv_3)
+					-- FIXED (2026-08-20): landing stage (flap 36/45) IS CG-dependent per real M table
+					-- ("Углы согласованного отклонения средств механизации и стабилизатора", 1997 PDF):
+					-- П (CG<24%):   5.5° physical = 5.5 internal (max) → mkv_3
+					-- С (24-32%):   3° physical = 2.0625 internal → confirmed by user (donor M shows -3)
+					-- З (CG>32%):   0° = baseline → no drive
+					-- Previous comment "M only lets CG affect the intermediate stage" was WRONG.
+					if stab_set == 2 then
+						stab_move=bool2int(stab_pos_now < mkv_3)       -- П: max 5.5 internal
+					elseif stab_set == 1 then
+						stab_move=bool2int(stab_pos_now < 2.0625)     -- С: 3° physical = 2.0625 internal
+					end
+					-- З (stab_set==0): no stab drive, stays at baseline
 				end
 			elseif stab_dirr ==-1 then
 				if flap_pos_L_last<44 then
-					if stab_set == 2 then
-						stab_move=-bool2int(stab_pos_now >= mkv_2)
-					elseif stab_set == 1 then
-						stab_move=-bool2int(stab_pos_now >= mkv_1)
-					elseif stab_set == 0 then
-						stab_move=-bool2int(stab_pos_now > 0)
+					if flap_pos_L_last >= 31 then
+						-- landing stage retract: CG-dependent
+						if stab_set == 2 then
+							stab_move=-bool2int(stab_pos_now >= mkv_3)
+						elseif stab_set == 1 then
+							stab_move=-bool2int(stab_pos_now >= 2.0625)
+						end
+					else
+						-- takeoff stage retract: CG-dependent
+						if stab_set == 2 then
+							stab_move=-bool2int(stab_pos_now >= mkv_2)
+						elseif stab_set == 1 then
+							stab_move=-bool2int(stab_pos_now >= mkv_1)
+						end
 					end
 				end
 			end
