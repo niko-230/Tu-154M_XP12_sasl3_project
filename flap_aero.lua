@@ -193,10 +193,10 @@ function update()
 	local flap_inn = math.max(get(flap_inn_L) or 0, 15)
 	local flap_out = math.max(get(flap_mid_L) or 0, 15)
 	-- Slat contributions (2026-08-21 tuning):
-	-- Real slat deploys to 22° per 1997 PDF. Lua now scales ratio to 22° for Cl/Cd benefit.
-	-- slat_cm_add coefficient REDUCED to keep total nose-up Cm same as pre-22° change,
+	-- Real slat deploys to 22 deg per 1997 PDF. Lua now scales ratio to 22 deg for Cl/Cd benefit.
+	-- slat_cm_add coefficient REDUCED to keep total nose-up Cm same as pre-22 deg change,
 	-- avoiding the worsened balloon. acf _slat1_dn_max_deg reverted to 10 (visual) since
-	-- native model uses _slat1_inc=8° for main slat effect regardless of max angle.
+	-- native model uses _slat1_inc=8 deg for main slat effect regardless of max angle.
 	local slat = (get(slat_L) or 0) * 22 -- 0-22 scale for Cl/Cd (was *10, now *22 for lift benefit)
 	local slat_cm_scale = 10/22  -- Cm stays at same total as before: 22 * (0.0024*10/22) = 0.024
 	local main_on_ground = ((get(gear_on_ground_L) or 0) + (get(gear_on_ground_R) or 0)) > 0.5
@@ -204,7 +204,7 @@ function update()
 	-- ported from M (donor's own comment: "optimized for 78-80% RPM mode and soft
 	-- touchdown"): slat interaction terms
 	local slat_cl_add = slat * 0.0016
-	local slat_cm_add = slat * 0.0024 * slat_cm_scale -- total=0.024 at full slats (same as before 22° change)
+	local slat_cm_add = slat * 0.0024 * slat_cm_scale -- total=0.024 at full slats (same as before 22 deg change)
 	local slat_cd_add = slat * 0.0007
 
 	-- Ground Effect Correction (M's formula)
@@ -219,7 +219,7 @@ function update()
 	-- ported from M: "clean M aerodynamics" -7% multiplier
 	-- CALIBRATED (2026-08-21): factor reduced from 0.93 to 0.74 based on observed
 	-- 8-10% excess power needed on approach vs M donor (same conditions). At approach
-	-- flap drag ≈50% of total drag → 20% reduction in flap Cd → ~10% total drag reduction.
+	-- flap drag ~50% of total drag -> 20% reduction in flap Cd -> ~10% total drag reduction.
 	flap1_cd = flap1_cd*cd_corr*0.74
 	flap2_cd = flap2_cd*cd_corr*0.74
 
@@ -238,7 +238,7 @@ function update()
 
 	-- Engine pitch moment -- M donor's exact formula (re-applied 2026-08-20 after revert).
 	-- Key fix: lift_tot = lift * q (dynamic pressure), making engine_pitch V^2-proportional.
-	-- Without this, engine nose-up moment is near-constant → balloon at flap 15 at high IAS.
+	-- Without this, engine nose-up moment is near-constant -> balloon at flap 15 at high IAS.
 	-- Constants 0.05/2.6/1.45 match M donor exactly. gear_pitch removed (M has no equivalent).
 	local spd=interpolate(engine_lift_tbl,tas)
 	local lft=interpolate(engine_lift_tbl2,lift) -- lift already includes *q from line above

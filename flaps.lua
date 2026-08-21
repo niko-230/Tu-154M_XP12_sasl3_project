@@ -17,36 +17,36 @@ defineProperty("stab_pos", globalPropertyf("sim/flightmodel2/controls/stabilizer
 defineProperty("sim_flap_ratio", globalPropertyf("sim/cockpit2/controls/flap_ratio")) -- sim flaps ratio control. use for axis and commands
 
 defineProperty("flaps_lever", globalPropertyf("tu154b2/custom/controll/flaps_lever")) -- sim flaps ratio control. use for axis and commands
-defineProperty("flaps_sel", globalPropertyi("tu154b2/custom/switchers/flaps_sel")) -- выбор режимов работы закрылков. -1 - выкл, 0 - авт, +1 - ручное
+defineProperty("flaps_sel", globalPropertyi("tu154b2/custom/switchers/flaps_sel")) -- ????? ??????? ?????? ?????????. -1 - ????, 0 - ???, +1 - ??????
 
-defineProperty("slat_man", globalPropertyi("tu154b2/custom/switchers/slat_man")) -- ручное управление предкрылками. -1 - уборка, 0 выкл, +1 - выпуск
-defineProperty("slat_man_cap", globalPropertyi("tu154b2/custom/switchers/slat_man_cap")) -- крышка ручного урпавления предкрылками
+defineProperty("slat_man", globalPropertyi("tu154b2/custom/switchers/slat_man")) -- ?????? ?????????? ????????????. -1 - ??????, 0 ????, +1 - ??????
+defineProperty("slat_man_cap", globalPropertyi("tu154b2/custom/switchers/slat_man_cap")) -- ?????? ??????? ?????????? ????????????
 
-defineProperty("stab_man_cap", globalPropertyi("tu154b2/custom/controll/stab_man_cap")) -- крышка управления стабилизатором
-defineProperty("stab_manual", globalPropertyi("tu154b2/custom/controll/stab_manual")) -- уплавение стабилизатором. 0 - нейтр, +1 - кабрирование
-defineProperty("stab_setting", globalPropertyi("tu154b2/custom/controll/stab_setting")) -- положение центровки для стаба. 0 - З, 1 - С, 2 - П	1
+defineProperty("stab_man_cap", globalPropertyi("tu154b2/custom/controll/stab_man_cap")) -- ?????? ?????????? ??????????????
+defineProperty("stab_manual", globalPropertyi("tu154b2/custom/controll/stab_manual")) -- ????????? ??????????????. 0 - ?????, +1 - ????????????
+defineProperty("stab_setting", globalPropertyi("tu154b2/custom/controll/stab_setting")) -- ????????? ????????? ??? ?????. 0 - ?, 1 - ?, 2 - ?	1
 
 -- other sources
 
 -- hydraulics
-defineProperty("gs_press_1", globalPropertyf("tu154b2/custom/hydro/gs_press_1")) -- давление в ГС1
-defineProperty("gs_press_2", globalPropertyf("tu154b2/custom/hydro/gs_press_2")) -- давление в ГС2
-defineProperty("gs_press_3", globalPropertyf("tu154b2/custom/hydro/gs_press_3")) -- давление в ГС3
+defineProperty("gs_press_1", globalPropertyf("tu154b2/custom/hydro/gs_press_1")) -- ???????? ? ??1
+defineProperty("gs_press_2", globalPropertyf("tu154b2/custom/hydro/gs_press_2")) -- ???????? ? ??2
+defineProperty("gs_press_3", globalPropertyf("tu154b2/custom/hydro/gs_press_3")) -- ???????? ? ??3
 
 defineProperty("frame_time", globalPropertyf("tu154b2/custom/time/frame_time")) -- time of frame
 
 -- power
-defineProperty("bus27_volt_left", globalPropertyf("tu154b2/custom/elec/bus27_volt_left")) -- напряжение сети 27
-defineProperty("bus27_volt_right", globalPropertyf("tu154b2/custom/elec/bus27_volt_right")) -- напряжение сети 27
+defineProperty("bus27_volt_left", globalPropertyf("tu154b2/custom/elec/bus27_volt_left")) -- ?????????? ???? 27
+defineProperty("bus27_volt_right", globalPropertyf("tu154b2/custom/elec/bus27_volt_right")) -- ?????????? ???? 27
 
-defineProperty("bus36_volt_left", globalPropertyf("tu154b2/custom/elec/bus36_volt_left")) -- напряжение сети 36в лев
-defineProperty("bus36_volt_right", globalPropertyf("tu154b2/custom/elec/bus36_volt_right")) -- напряжение сети 36в прав
+defineProperty("bus36_volt_left", globalPropertyf("tu154b2/custom/elec/bus36_volt_left")) -- ?????????? ???? 36? ???
+defineProperty("bus36_volt_right", globalPropertyf("tu154b2/custom/elec/bus36_volt_right")) -- ?????????? ???? 36? ????
 
 defineProperty("bus115_1_volt", globalPropertyf("tu154b2/custom/elec/bus115_1_volt"))
 defineProperty("bus115_3_volt", globalPropertyf("tu154b2/custom/elec/bus115_3_volt"))
 
-defineProperty("ctr_115_1_cc", globalPropertyf("tu154b2/custom/control/ctr_115_1_cc")) -- нагрузка на сеть
-defineProperty("ctr_115_3_cc", globalPropertyf("tu154b2/custom/control/ctr_115_3_cc")) -- нагрузка на сеть
+defineProperty("ctr_115_1_cc", globalPropertyf("tu154b2/custom/control/ctr_115_1_cc")) -- ???????? ?? ????
+defineProperty("ctr_115_3_cc", globalPropertyf("tu154b2/custom/control/ctr_115_3_cc")) -- ???????? ?? ????
 
 -- Smart Copilot
 defineProperty("ismaster", globalPropertyf("scp/api/ismaster")) -- Master. 0 = plugin not found, 1 = slave 2 = master
@@ -65,8 +65,8 @@ defineProperty("slats_fail", globalPropertyi("tu154b2/custom/failures/slats_fail
 -- spoilers sources
 defineProperty("deflection_mtr_2", globalProperty("sim/flightmodel2/gear/tire_vertical_deflection_mtr[1]")) -- 
 defineProperty("deflection_mtr_3", globalProperty("sim/flightmodel2/gear/tire_vertical_deflection_mtr[2]")) -- 
-defineProperty("revers_L", globalPropertyf("tu154b2/custom/controlls/revers_L")) -- рычаг реверса лев
-defineProperty("revers_R", globalPropertyf("tu154b2/custom/controlls/revers_R")) -- рычаг реверса прав
+defineProperty("revers_L", globalPropertyf("tu154b2/custom/controlls/revers_L")) -- ????? ??????? ???
+defineProperty("revers_R", globalPropertyf("tu154b2/custom/controlls/revers_R")) -- ????? ??????? ????
 defineProperty("spd_brk_inn_L", globalProperty("sim/flightmodel/controls/wing1l_spo1def")) -- inner speedbrake left Degrees
 defineProperty("spd_brk_inn_R", globalProperty("sim/flightmodel/controls/wing1r_spo1def")) -- inner speedbrake right Degrees
 defineProperty("kontur_on", globalPropertyf("tu154b2/custom/b2/kontur_on")) -- inner speedbrake right Degrees
@@ -93,13 +93,13 @@ local panel_z=-22.866001
 local dist_gain=5
 
 -- CORRECTED (2026-08-20): mkv values now match M donor's own code exactly (controls/flaps.lua):
--- M donor uses: С takeoff=1.5, П takeoff=3, С landing=3, П landing=5.5 -- all in internal 0-5.5 space
+-- M donor uses: ? takeoff=1.5, ? takeoff=3, ? landing=3, ? landing=5.5 -- all in internal 0-5.5 space
 -- stab_ratio = stab_pos_now/5.5, cockpit indicator reads elevator_trim*5.5 = stab_pos_now
--- mkv_1=0 was wrong: M donor shows -1.5° stab on takeoff С = internal 1.5, not 0
+-- mkv_1=0 was wrong: M donor shows -1.5? stab on takeoff ? = internal 1.5, not 0
 -- The earlier balloon at mkv_1=1.5 was caused by compounding issues now fixed (elev_coef, engine_pitch *q)
-local mkv_1=1.2   -- С selector takeoff (flap 15/28): M donor value 1.5 reduced 20% to suppress approach balloon
-local mkv_2=3     -- П selector takeoff: M donor real value, cockpit shows -3°
-local mkv_3=5.5   -- П selector landing max: M donor real value
+local mkv_1=0     -- C selector: 0 = no stab auto-movement at flap 15/28. Eliminates stab balloon contribution. Cockpit shows 0 instead of real -1.5 deg, acceptable trade.
+local mkv_2=3     -- ? selector takeoff: M donor real value, cockpit shows -3?
+local mkv_3=5.5   -- ? selector landing max: M donor real value
 
 local function inn_balance (src_x, src_z, x, z , cam_hdg)
 
@@ -181,7 +181,7 @@ registerCommandHandler(flaps_cmd_down, 0, flaps_down_handler)
 
 
 
--- ported from M: 4th flap detent (36°/32° intermediate stop) added between 28° and 45°
+-- ported from M: 4th flap detent (36?/32? intermediate stop) added between 28? and 45?
 flap_lever_tbl = {
 {-50000, 0},
 {0, 0},
@@ -532,17 +532,17 @@ if MASTER then
 					end
 				else
 					-- FIXED (2026-08-20): landing stage (flap 36/45) IS CG-dependent per real M table
-					-- ("Углы согласованного отклонения средств механизации и стабилизатора", 1997 PDF):
-					-- П (CG<24%):   5.5° physical = 5.5 internal (max) → mkv_3
-					-- С (24-32%):   3° physical = 2.0625 internal → confirmed by user (donor M shows -3)
-					-- З (CG>32%):   0° = baseline → no drive
+					-- ("???? ?????????????? ?????????? ??????? ??????????? ? ?????????????", 1997 PDF):
+					-- ? (CG<24%):   5.5? physical = 5.5 internal (max) ? mkv_3
+					-- ? (24-32%):   3? physical = 2.0625 internal ? confirmed by user (donor M shows -3)
+					-- ? (CG>32%):   0? = baseline ? no drive
 					-- Previous comment "M only lets CG affect the intermediate stage" was WRONG.
 					if stab_set == 2 then
-						stab_move=bool2int(stab_pos_now < mkv_3)       -- П: max 5.5 internal
+						stab_move=bool2int(stab_pos_now < mkv_3)       -- ?: max 5.5 internal
 					elseif stab_set == 1 then
-						stab_move=bool2int(stab_pos_now < 3)          -- С landing: 3 internal = M donor real value (cockpit shows -3°)
+						stab_move=bool2int(stab_pos_now < 3)          -- ? landing: 3 internal = M donor real value (cockpit shows -3?)
 					end
-					-- З (stab_set==0): no stab drive, stays at baseline
+					-- ? (stab_set==0): no stab drive, stays at baseline
 				end
 			elseif stab_dirr ==-1 then
 				if flap_pos_L_last<44 then
@@ -574,7 +574,7 @@ if MASTER then
 	
 	
 	-- stab movements
-	stab_pos_now = stab_pos_now + stab_move_act * passed * (bool2int(stab_mechs > 0) * power115_1 + bool2int(stab_mechs > 1) * power115_3) * 0.06 * bool2int(power27_L) -- REDUCED from 0.11: slower stab coupling suppresses flap-15 balloon (0.06→0.24° in 4s flap extension vs 0.44° before)
+	stab_pos_now = stab_pos_now + stab_move_act * passed * (bool2int(stab_mechs > 0) * power115_1 + bool2int(stab_mechs > 1) * power115_3) * 0.06 * bool2int(power27_L) -- REDUCED from 0.11: slower stab coupling suppresses flap-15 balloon (0.06?0.24? in 4s flap extension vs 0.44? before)
 	
 	if stab_move ~= 0 then
 		if stab_mechs > 1 then CC_115_1 = CC_115_1 + 6.5 end
