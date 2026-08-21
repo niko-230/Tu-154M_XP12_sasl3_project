@@ -48186,7 +48186,7 @@ P acf/_slat1_dn/7 0.100000001
 P acf/_slat1_dn/8 0.100000001
 P acf/_slat1_dn/9 0.100000001
 P acf/_slat1_dn/count 12
-P acf/_slat1_dn_max_deg 10.000000000
+P acf/_slat1_dn_max_deg 22.000000000
 P acf/_slat1_inc 8.000000000
 P acf/_slat1_type 1
 P acf/_slat2_cd 0.000000000
@@ -48203,7 +48203,7 @@ P acf/_slat2_dn/7 0.100000001
 P acf/_slat2_dn/8 0.100000001
 P acf/_slat2_dn/9 0.100000001
 P acf/_slat2_dn/count 12
-P acf/_slat2_dn_max_deg 10.000000000
+P acf/_slat2_dn_max_deg 22.000000000
 P acf/_slat2_inc 8.000000000
 P acf/_slat2_type 1
 P acf/_slat_EQ 1

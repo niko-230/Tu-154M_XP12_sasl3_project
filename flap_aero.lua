@@ -192,7 +192,7 @@ function update()
 	local lift=((get(lift_left) or 0)+(get(lift_right) or 0))/2*q
 	local flap_inn = math.max(get(flap_inn_L) or 0, 15)
 	local flap_out = math.max(get(flap_mid_L) or 0, 15)
-	local slat = (get(slat_L) or 0) * 10 -- ratio (0-1) scaled to real max slat throw (10 deg, per acf _slat1_dn_max_deg)
+	local slat = (get(slat_L) or 0) * 22 -- FIXED (2026-08-21): real slat max = 22° (per 1997 PDF "предкрылки на 22°"). acf _slat1_dn_max_deg also updated to 22. Was 10° = 55% deficit in slat Cl/Cm/Cd contributions.
 	local main_on_ground = ((get(gear_on_ground_L) or 0) + (get(gear_on_ground_R) or 0)) > 0.5
 
 	-- ported from M (donor's own comment: "optimized for 78-80% RPM mode and soft
