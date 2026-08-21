@@ -846,9 +846,12 @@ local reverse_table = {{ -10000, 0.04 }, -- BUGS workaround
 		-- 102,779 N baseline almost exactly -- confirms B's original number was already correct)
 		-- B's own alt/ISA/bleed/ice/reverse correction model below is kept as-is, only the
 		-- flat baseline constant changes.
-		set(acf_tmax_1, 110030.61*alt_corr*kpp1_corr*(climb_corr+eng_1_bleed_loss)*isa_corr*low_corr_1*push*rev_L_corr*ice1)
-		set(acf_tmax_2, 110030.61*alt_corr*kpp2_corr*(climb_corr+eng_2_bleed_loss)*isa_corr*low_corr_2*push*ice2)
-		set(acf_tmax_3, 110030.61*alt_corr*kpp3_corr*(climb_corr+eng_3_bleed_loss)*isa_corr*low_corr_3*push*rev_R_corr*ice3)
+		-- CALIBRATED (2026-08-21): base thrust constant increased 15% (110030.61 -> 126535.20)
+		-- to compensate for aircraft's measured 15% excess drag vs real M donor performance.
+		-- Result: M donor's real RPM settings now maintain M donor's real flight performance.
+		set(acf_tmax_1, 126535.20*alt_corr*kpp1_corr*(climb_corr+eng_1_bleed_loss)*isa_corr*low_corr_1*push*rev_L_corr*ice1)
+		set(acf_tmax_2, 126535.20*alt_corr*kpp2_corr*(climb_corr+eng_2_bleed_loss)*isa_corr*low_corr_2*push*ice2)
+		set(acf_tmax_3, 126535.20*alt_corr*kpp3_corr*(climb_corr+eng_3_bleed_loss)*isa_corr*low_corr_3*push*rev_R_corr*ice3)
 		set(isa_temp_d,d_isa)
 		set(R_SC_1,get(R_1))
 		set(R_SC_2,get(R_2))
