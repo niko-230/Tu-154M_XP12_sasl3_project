@@ -192,13 +192,19 @@ function update()
 	local lift=((get(lift_left) or 0)+(get(lift_right) or 0))/2*q
 	local flap_inn = math.max(get(flap_inn_L) or 0, 15)
 	local flap_out = math.max(get(flap_mid_L) or 0, 15)
-	local slat = (get(slat_L) or 0) * 22 -- FIXED (2026-08-21): real slat max = 22° (per 1997 PDF "предкрылки на 22°"). acf _slat1_dn_max_deg also updated to 22. Was 10° = 55% deficit in slat Cl/Cm/Cd contributions.
+	-- Slat contributions (2026-08-21 tuning):
+	-- Real slat deploys to 22° per 1997 PDF. Lua now scales ratio to 22° for Cl/Cd benefit.
+	-- slat_cm_add coefficient REDUCED to keep total nose-up Cm same as pre-22° change,
+	-- avoiding the worsened balloon. acf _slat1_dn_max_deg reverted to 10 (visual) since
+	-- native model uses _slat1_inc=8° for main slat effect regardless of max angle.
+	local slat = (get(slat_L) or 0) * 22 -- 0-22 scale for Cl/Cd (was *10, now *22 for lift benefit)
+	local slat_cm_scale = 10/22  -- Cm stays at same total as before: 22 * (0.0024*10/22) = 0.024
 	local main_on_ground = ((get(gear_on_ground_L) or 0) + (get(gear_on_ground_R) or 0)) > 0.5
 
 	-- ported from M (donor's own comment: "optimized for 78-80% RPM mode and soft
 	-- touchdown"): slat interaction terms
 	local slat_cl_add = slat * 0.0016
-	local slat_cm_add = slat * 0.0024
+	local slat_cm_add = slat * 0.0024 * slat_cm_scale -- total=0.024 at full slats (same as before 22° change)
 	local slat_cd_add = slat * 0.0007
 
 	-- Ground Effect Correction (M's formula)

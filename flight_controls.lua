@@ -328,7 +328,8 @@ function update()
 	-- M donor (controls/flight_controls.lua line 296): line(mach, 0, 1, 0.8, 0.5)
 	-- At Mach 0.3 (climb): M=14.2° vs old formula=24.7° — 75% more deflection was causing
 	-- sharper/harder banking than real M. Cruise (~Mach 0.78): both give ~11.3°, consistent.
-	local ail_corr = line(mach, 0, 1, 0.8, 0.5)  -- M donor's real mach-based aileron scaling
+	local ail_corr = line(mach, 0, 1, 0.70, 0.45)  -- tuned: softer at low speed (was 0.8→14.2° still sharp)
+	-- At Mach 0.3: 0.70-0.09=0.61 × 20 = 12.2°; at Mach 0.78: 0.45+adj ≈ 9°
 	local left_ail_pos = roll_pos_act * 20 * ail_corr
 	local right_ail_pos = -roll_pos_act * 20 * ail_corr
 	
