@@ -97,7 +97,7 @@ local dist_gain=5
 -- stab_ratio = stab_pos_now/5.5, cockpit indicator reads elevator_trim*5.5 = stab_pos_now
 -- mkv_1=0 was wrong: M donor shows -1.5° stab on takeoff С = internal 1.5, not 0
 -- The earlier balloon at mkv_1=1.5 was caused by compounding issues now fixed (elev_coef, engine_pitch *q)
-local mkv_1=1.5   -- С selector takeoff (flap 15/28): M donor real value, cockpit shows -1.5°
+local mkv_1=1.2   -- С selector takeoff (flap 15/28): M donor value 1.5 reduced 20% to suppress approach balloon
 local mkv_2=3     -- П selector takeoff: M donor real value, cockpit shows -3°
 local mkv_3=5.5   -- П selector landing max: M donor real value
 
