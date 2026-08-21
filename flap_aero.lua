@@ -204,7 +204,7 @@ function update()
 	-- ported from M (donor's own comment: "optimized for 78-80% RPM mode and soft
 	-- touchdown"): slat interaction terms
 	local slat_cl_add = slat * 0.0016
-	local slat_cm_add = slat * 0.0024 * slat_cm_scale -- total=0.024 at full slats (same as before 22 deg change)
+	local slat_cm_add = slat * 0.0024  -- full 22 deg scale: more nose-down correction from slats, reduces balloon
 	local slat_cd_add = slat * 0.0007
 
 	-- Ground Effect Correction (M's formula)
@@ -242,7 +242,7 @@ function update()
 	-- Constants 0.05/2.6/1.45 match M donor exactly. gear_pitch removed (M has no equivalent).
 	local spd=interpolate(engine_lift_tbl,tas)
 	local lft=interpolate(engine_lift_tbl2,lift) -- lift already includes *q from line above
-	local engine_pitch=80000*0.05*9.81*2.6*(1.45*(r_1+r_3)/100000)*spd*lft
+	local engine_pitch=80000*0.05*9.81*2.6*(1.26*(r_1+r_3)/100000)*spd*lft  -- 1.45/1.15=1.26: compensates 15% thrust boost so pitch moment stays unchanged
 	if tas>60 then
 		set(pitch_add,engine_pitch)
 	end
