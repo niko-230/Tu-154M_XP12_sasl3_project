@@ -217,8 +217,11 @@ function update()
 	local flap2_cd = (3.15e-05*math.pow(flap_out,2) + 3.95e-03*flap_out + 0.063) + slat_cd_add
 	local cd_corr = 0.00115*math.pow(GE_lift,33.0) + 0.99
 	-- ported from M: "clean M aerodynamics" -7% multiplier
-	flap1_cd = flap1_cd*cd_corr*0.93
-	flap2_cd = flap2_cd*cd_corr*0.93
+	-- CALIBRATED (2026-08-21): factor reduced from 0.93 to 0.74 based on observed
+	-- 8-10% excess power needed on approach vs M donor (same conditions). At approach
+	-- flap drag ≈50% of total drag → 20% reduction in flap Cd → ~10% total drag reduction.
+	flap1_cd = flap1_cd*cd_corr*0.74
+	flap2_cd = flap2_cd*cd_corr*0.74
 
 	-- ported from M: Pitch Moment Correction (quadratic, with slat term and
 	-- touchdown softening B's formula didn't have)

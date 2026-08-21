@@ -397,8 +397,8 @@ createGlobalPropertyi("tu154b2/custom/payload/cabin_num", 4) -- экипаж в 
 createGlobalPropertyi("tu154b2/custom/payload/zone_4", 48) -- пассажиры
 createGlobalPropertyi("tu154b2/custom/payload/zone_5", 42) -- пассажиры
 createGlobalPropertyi("tu154b2/custom/payload/zone_6", 13) -- пассажиры
-createGlobalPropertyi("tu154b2/custom/payload/cargo_1", 1500) -- багаж 1
-createGlobalPropertyi("tu154b2/custom/payload/cargo_2", 1200) -- багаж 2
+createGlobalPropertyi("tu154b2/custom/payload/cargo_1", 500) -- багаж 1
+createGlobalPropertyi("tu154b2/custom/payload/cargo_2", 3500) -- багаж 2
 createGlobalPropertyi("tu154b2/custom/payload/kitchens", 300) -- загрузка кухонь
 createGlobalPropertyi("tu154b2/custom/payload/various", 50) -- прочее
 createGlobalPropertyi("tu154b2/custom/payload/main_dist", 1000) -- дистанция до основного АП
@@ -407,12 +407,12 @@ createGlobalPropertyi("tu154b2/custom/payload/main_fl", 380) -- эшелон д�
 createGlobalPropertyi("tu154b2/custom/payload/alt_fl", 320) -- эшелон до запасного
 createGlobalPropertyi("tu154b2/custom/payload/nav_fuel", 2500) -- навигацонный запас
 createGlobalPropertyi("tu154b2/custom/payload/taxi_fuel", 100) -- топливо на руление
-createGlobalPropertyi("tu154b2/custom/payload/tank_1", 2600) -- топливо в баке -- FIXED (2026-08-19): 2072 sat below the real 2500kg feed-tank-low alarm threshold at spawn, triggering it immediately regardless of total fuel
+createGlobalPropertyi("tu154b2/custom/payload/tank_1", 3300) -- топливо в баке (2026-08-19): 2072 sat below the real 2500kg feed-tank-low alarm threshold at spawn, triggering it immediately regardless of total fuel
 createGlobalPropertyi("tu154b2/custom/payload/tank_4", 0) -- топливо в баке
-createGlobalPropertyi("tu154b2/custom/payload/tank_2L", 856) -- топливо в баке
-createGlobalPropertyi("tu154b2/custom/payload/tank_2R", 856) -- топливо в баке
-createGlobalPropertyi("tu154b2/custom/payload/tank_3L", 1844) -- топливо в баке
-createGlobalPropertyi("tu154b2/custom/payload/tank_3R", 1844) -- топливо в баке
+createGlobalPropertyi("tu154b2/custom/payload/tank_2L", 1500) -- топливо в баке
+createGlobalPropertyi("tu154b2/custom/payload/tank_2R", 1500) -- топливо в баке
+createGlobalPropertyi("tu154b2/custom/payload/tank_3L", 1500) -- топливо в баке
+createGlobalPropertyi("tu154b2/custom/payload/tank_3R", 1500) -- топливо в баке
 createGlobalPropertyi("tu154b2/custom/payload/load_fuel_btn", 0) -- кнопка загрузки топлива
 createGlobalPropertyi("tu154b2/custom/payload/load_fast_btn", 0) -- кнопка загрузки быстро
 createGlobalPropertyi("tu154b2/custom/payload/load_slow_btn", 0) -- кнопка загрузки медленно
