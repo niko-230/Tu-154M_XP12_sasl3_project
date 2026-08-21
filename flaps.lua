@@ -574,7 +574,7 @@ if MASTER then
 	
 	
 	-- stab movements
-	stab_pos_now = stab_pos_now + stab_move_act * passed * (bool2int(stab_mechs > 0) * power115_1 + bool2int(stab_mechs > 1) * power115_3) * 0.11 * bool2int(power27_L)
+	stab_pos_now = stab_pos_now + stab_move_act * passed * (bool2int(stab_mechs > 0) * power115_1 + bool2int(stab_mechs > 1) * power115_3) * 0.06 * bool2int(power27_L) -- REDUCED from 0.11: slower stab coupling suppresses flap-15 balloon (0.06→0.24° in 4s flap extension vs 0.44° before)
 	
 	if stab_move ~= 0 then
 		if stab_mechs > 1 then CC_115_1 = CC_115_1 + 6.5 end
