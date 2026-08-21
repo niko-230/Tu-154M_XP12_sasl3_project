@@ -328,8 +328,8 @@ function update()
 	-- M donor (controls/flight_controls.lua line 296): line(mach, 0, 1, 0.8, 0.5)
 	-- At Mach 0.3 (climb): M=14.2° vs old formula=24.7° — 75% more deflection was causing
 	-- sharper/harder banking than real M. Cruise (~Mach 0.78): both give ~11.3°, consistent.
-	local ail_corr = line(mach, 0, 1, 0.70, 0.45)  -- tuned: softer at low speed (was 0.8→14.2° still sharp)
-	-- At Mach 0.3: 0.70-0.09=0.61 × 20 = 12.2°; at Mach 0.78: 0.45+adj ≈ 9°
+	local ail_corr = line(mach, 0, 1, 0.65, 0.35)  -- reduced: book elevator max=25° suggests conservative feel
+	-- At Mach 0.3: 0.65-0.09=0.56 × 20 = 11.2°; at Mach 0.78: 0.35+adj ≈ 7°
 	local left_ail_pos = roll_pos_act * 20 * ail_corr
 	local right_ail_pos = -roll_pos_act * 20 * ail_corr
 	
@@ -566,8 +566,8 @@ end
 	local elev_right_c = 0 
 	
 	
-	elev_left = -pitch_pos_act * 29 
-	elev_right = -pitch_pos_act * 29
+	elev_left = -pitch_pos_act * 25 -- book: max РВ вверх = 25°, effective range 16-17° at fwd CG
+	elev_right = -pitch_pos_act * 25
 	if elev_left>16-stab_pos*1.5 then
 		elev_left = 16-stab_pos*1.5 
 	end
