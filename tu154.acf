@@ -47060,13 +47060,13 @@ P acf/_elec_regen_eta 0.000000000
 P acf/_elec_regen_rat 0.000000000
 P acf/_elev1_cratR 0.349999994
 P acf/_elev1_cratT 0.250000000
-P acf/_elev1_dn 20.000000000
+P acf/_elev1_dn 52.000000000
 P acf/_elev1_max_sweep_rat 1.000000000
 P acf/_elev1_rat1 1.000000000
 P acf/_elev1_rat2 1.000000000
 P acf/_elev1_sbrk 0.000000000
 P acf/_elev1_sbrk_gnd_only 0
-P acf/_elev1_up 25.000000000
+P acf/_elev1_up 65.000000000
 P acf/_elev1_v1 0.000000000
 P acf/_elev1_v2 0.000000000
 P acf/_elev2_cratR 0.000000000
@@ -48187,7 +48187,7 @@ P acf/_slat1_dn/8 0.100000001
 P acf/_slat1_dn/9 0.100000001
 P acf/_slat1_dn/count 12
 P acf/_slat1_dn_max_deg 10.000000000
-P acf/_slat1_inc 4.000000000
+P acf/_slat1_inc 8.000000000
 P acf/_slat1_type 1
 P acf/_slat2_cd 0.000000000
 P acf/_slat2_dn/0 0.000000000
@@ -48204,7 +48204,7 @@ P acf/_slat2_dn/8 0.100000001
 P acf/_slat2_dn/9 0.100000001
 P acf/_slat2_dn/count 12
 P acf/_slat2_dn_max_deg 10.000000000
-P acf/_slat2_inc 4.000000000
+P acf/_slat2_inc 8.000000000
 P acf/_slat2_type 1
 P acf/_slat_EQ 1
 P acf/_slat_ext1_time 18.000000000
