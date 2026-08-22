@@ -522,7 +522,7 @@ if MASTER then
 
 	if get(stab_man_cap) == 0 and get(stab_automatic_fail) == 0 then -- automatic controls and no automatic fails
 		local stab_set = get(stab_setting)
-		if flap_lever_pos>2 or flap_pos_L_last>25 then
+		if flap_pos_L_last>10 then -- M donor trigger: wait for actual flap to reach 10 (not lever). Flap first, then stab.
 			if stab_dirr ==1 then
 				if flap_pos_L_last<20 then
 					if stab_set == 2 then
@@ -574,7 +574,7 @@ if MASTER then
 	
 	
 	-- stab movements
-	stab_pos_now = stab_pos_now + stab_move_act * passed * (bool2int(stab_mechs > 0) * power115_1 + bool2int(stab_mechs > 1) * power115_3) * 0.22 * bool2int(power27_L) -- DIVE FIX: 2x original rate so stab reaches landing target before flap 45 Cm overwhelms -- REDUCED from 0.11: slower stab coupling suppresses flap-15 balloon (0.06?0.24? in 4s flap extension vs 0.44? before)
+	stab_pos_now = stab_pos_now + stab_move_act * passed * (bool2int(stab_mechs > 0) * power115_1 + bool2int(stab_mechs > 1) * power115_3) * 0.11 * bool2int(power27_L) -- M donor real rate 0.11/s. With M hstab+delayed trigger, balloon manageable
 	
 	if stab_move ~= 0 then
 		if stab_mechs > 1 then CC_115_1 = CC_115_1 + 6.5 end

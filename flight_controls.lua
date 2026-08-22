@@ -566,8 +566,8 @@ end
 	local elev_right_c = 0 
 	
 	
-	elev_left = -pitch_pos_act * 25 -- book: max РВ вверх = 25°, effective range 16-17° at fwd CG
-	elev_right = -pitch_pos_act * 25
+	elev_left = -pitch_pos_act * 30 -- book: max РВ вверх = 25°, effective range 16-17° at fwd CG -- INCREASED to 30 for dive authority (was 25 per book; extra 5 deg provides additional pitch moment at flap 45)
+	elev_right = -pitch_pos_act * 30
 	if elev_left>16-stab_pos*1.5 then
 		elev_left = 16-stab_pos*1.5 
 	end
