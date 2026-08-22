@@ -559,15 +559,15 @@ end
 	-- was reducing elev_coef exactly when stab moves nose-up (flap 15 deployment),
 	-- cutting elevator authority right when needed most → balloon. M's 0.6 is constant
 	-- and provides consistent authority regardless of stab position.
-	elev_coef = 0.6
+	elev_coef = 1.2  -- doubled from M real 0.6 to compensate M hstab weakness at flap 45
 	local elev_left = 0 
 	local elev_right = 0 
 	local elev_left_c = 0 
 	local elev_right_c = 0 
 	
 	
-	elev_left = -pitch_pos_act * 30 -- book: max РВ вверх = 25°, effective range 16-17° at fwd CG -- INCREASED to 30 for dive authority (was 25 per book; extra 5 deg provides additional pitch moment at flap 45)
-	elev_right = -pitch_pos_act * 30
+	elev_left = -pitch_pos_act * 60 -- book: max РВ вверх = 25°, effective range 16-17° at fwd CG -- INCREASED to 30 for dive authority (was 25 per book; extra 5 deg provides additional pitch moment at flap 45)
+	elev_right = -pitch_pos_act * 60
 	if elev_left>16-stab_pos*1.5 then
 		elev_left = 16-stab_pos*1.5 
 	end

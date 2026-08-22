@@ -540,7 +540,7 @@ if MASTER then
 					if stab_set == 2 then
 						stab_move=bool2int(stab_pos_now < mkv_3)       -- ?: max 5.5 internal
 					elseif stab_set == 1 then
-						stab_move=bool2int(stab_pos_now < 4.5)          -- C landing: 4.5 internal = 4.77 physical with M real hstab, prevents dive
+						stab_move=bool2int(stab_pos_now < 3.0)          -- C landing: 3.0 = M donor real value (compensated by doubled elevator auth)
 					end
 					-- ? (stab_set==0): no stab drive, stays at baseline
 				end
@@ -551,7 +551,7 @@ if MASTER then
 						if stab_set == 2 then
 							stab_move=-bool2int(stab_pos_now >= mkv_3)
 						elseif stab_set == 1 then
-							stab_move=-bool2int(stab_pos_now >= 4.5)
+							stab_move=-bool2int(stab_pos_now >= 3.0)
 						end
 					else
 						-- takeoff stage retract: CG-dependent
