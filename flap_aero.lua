@@ -203,7 +203,7 @@ function update()
 
 	-- ported from M (donor's own comment: "optimized for 78-80% RPM mode and soft
 	-- touchdown"): slat interaction terms
-	local slat_cl_add = slat * 0.0016
+	local slat_cl_add = slat * 0.009  -- increased: compensates _slat1_inc 8->4 reduction
 	local slat_cm_add = slat * 0.006   -- INCREASED: real 22 deg slats produce ~2.5x more nose-down Cm than 10 deg sim. Directly counteracts native XP12 pitch-up from _slat1_inc=8 during deployment. Calibrated to eliminate balloon without affecting landing balance.
 	local slat_cd_add = slat * 0.0007
 
