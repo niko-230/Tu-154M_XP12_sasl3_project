@@ -1,0 +1,142 @@
+A
+1000
+ACF_SOUNDS
+
+DISABLE_LEGACY_ALERT_SOUNDS
+
+BEGIN_SOUND_SPACE
+	SOUND_INDEX	0
+	BLEND_DEPTH	0.25
+	AABB	-2.364 -2.143 -22.531 1.589 0.950 1.421
+END_SOUND_SPACE
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_push
+	VEH_XYZ 0.213 -0.121 -23.017
+	PARAM_DREF_IDX 0
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/cursor_left_btn     == 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_push
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/cursor_right_btn    == 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_push
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/release_btn         == 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_push
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/scroll_down_btn     == 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_push
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/scroll_up_btn       == 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_release
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/cursor_left_btn     == 0
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_release
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/cursor_right_btn    == 0
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_release
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/release_btn         == 0
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_release
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/scroll_down_btn     == 0
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/absu_sw_release
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND tu154b2/custom/buttons/nvu/pa3/scroll_up_btn       == 0
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/metal_switch
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND DELTA=tu154b2/custom/switchers/nvu/pa3/power_sw != 0
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/equipment/manipulators/metal_switch
+	VEH_XYZ 0.213 -0.121 -23.017
+	EVENT_START_COND DELTA=tu154b2/custom/switchers/nvu/pa3/mode_sw != 0
+END_SOUND_ATTACHMENT
+
+-- ===== Engine sounds: wired to the M-variant events (already compiled in this
+-- aircraft's own Master Bank, left over from the shared Felis source) instead
+-- of the B-variant events. No new audio/FMOD Studio work needed. =====
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/engines_m/starter
+	VEH_PART engine 0
+	PARAM_DREF_IDX 0
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/engines_m/n2
+	VEH_PART engine 0
+	PARAM_DREF_IDX 0
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/engines_m/n2_in
+	VEH_PART engine 0
+	PARAM_DREF_IDX 0
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/engines_m/starter
+	VEH_PART engine 1
+	PARAM_DREF_IDX 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/engines_m/n2
+	VEH_PART engine 1
+	PARAM_DREF_IDX 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/engines_m/n2_in
+	VEH_PART engine 1
+	PARAM_DREF_IDX 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/engines_m/starter
+	VEH_PART engine 2
+	PARAM_DREF_IDX 2
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/engines_m/n2
+	VEH_PART engine 2
+	PARAM_DREF_IDX 2
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+	EVENT_NAME /T154/engines_m/n2_in
+	VEH_PART engine 2
+	PARAM_DREF_IDX 2
+END_SOUND_ATTACHMENT
