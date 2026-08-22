@@ -97,9 +97,9 @@ local dist_gain=5
 -- stab_ratio = stab_pos_now/5.5, cockpit indicator reads elevator_trim*5.5 = stab_pos_now
 -- mkv_1=0 was wrong: M donor shows -1.5? stab on takeoff ? = internal 1.5, not 0
 -- The earlier balloon at mkv_1=1.5 was caused by compounding issues now fixed (elev_coef, engine_pitch *q)
-local mkv_1=0     -- C selector: 0 = no stab auto-movement at flap 15/28. Eliminates stab balloon contribution. Cockpit shows 0 instead of real -1.5 deg, acceptable trade.
-local mkv_2=3     -- ? selector takeoff: M donor real value, cockpit shows -3?
-local mkv_3=5.5   -- ? selector landing max: M donor real value
+local mkv_1=0.58  -- C selector takeoff: 0.58*2.6=1.51 M-equiv (M donor 1.5 with M hstab, no balloon)
+local mkv_2=1.15  -- P selector takeoff: 1.15*2.6=3.0 M-equiv (M donor 3.0 with M hstab)
+local mkv_3=2.12  -- P selector landing max: 2.12*2.6=5.5 M-equiv (M donor 5.5 with M hstab)
 
 local function inn_balance (src_x, src_z, x, z , cam_hdg)
 
@@ -540,7 +540,7 @@ if MASTER then
 					if stab_set == 2 then
 						stab_move=bool2int(stab_pos_now < mkv_3)       -- ?: max 5.5 internal
 					elseif stab_set == 1 then
-						stab_move=bool2int(stab_pos_now < 3)          -- ? landing: 3 internal = M donor real value (cockpit shows -3?)
+						stab_move=bool2int(stab_pos_now < 1.15)          -- C landing: 1.15*2.6=3.0 M-equiv, no dive
 					end
 					-- ? (stab_set==0): no stab drive, stays at baseline
 				end
@@ -551,7 +551,7 @@ if MASTER then
 						if stab_set == 2 then
 							stab_move=-bool2int(stab_pos_now >= mkv_3)
 						elseif stab_set == 1 then
-							stab_move=-bool2int(stab_pos_now >= 3)
+							stab_move=-bool2int(stab_pos_now >= 1.15)
 						end
 					else
 						-- takeoff stage retract: CG-dependent

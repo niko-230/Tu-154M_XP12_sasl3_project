@@ -48207,10 +48207,10 @@ P acf/_slat2_dn_max_deg 10.000000000
 P acf/_slat2_inc 8.000000000
 P acf/_slat2_type 1
 P acf/_slat_EQ 1
-P acf/_slat_ext1_time 10.000000000
-P acf/_slat_ext2_time 10.000000000
-P acf/_slat_ret1_time 10.000000000
-P acf/_slat_ret2_time 10.000000000
+P acf/_slat_ext1_time 18.000000000
+P acf/_slat_ext2_time 18.000000000
+P acf/_slat_ret1_time 18.000000000
+P acf/_slat_ret2_time 18.000000000
 P acf/_slat_with_Vind 0.000000000
 P acf/_slat_with_stall_EQ 0
 P acf/_slung_len 0.000000000
