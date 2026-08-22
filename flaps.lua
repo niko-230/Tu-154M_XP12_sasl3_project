@@ -97,9 +97,9 @@ local dist_gain=5
 -- stab_ratio = stab_pos_now/5.5, cockpit indicator reads elevator_trim*5.5 = stab_pos_now
 -- mkv_1=0 was wrong: M donor shows -1.5? stab on takeoff ? = internal 1.5, not 0
 -- The earlier balloon at mkv_1=1.5 was caused by compounding issues now fixed (elev_coef, engine_pitch *q)
-local mkv_1=0.58  -- C selector takeoff: 0.58*2.6=1.51 M-equiv (M donor 1.5 with M hstab, no balloon)
-local mkv_2=1.15  -- P selector takeoff: 1.15*2.6=3.0 M-equiv (M donor 3.0 with M hstab)
-local mkv_3=2.12  -- P selector landing max: 2.12*2.6=5.5 M-equiv (M donor 5.5 with M hstab)
+local mkv_1=1.5   -- C selector takeoff (original value)
+local mkv_2=3     -- P selector takeoff (original value)
+local mkv_3=5.5   -- P selector landing max (original value)
 
 local function inn_balance (src_x, src_z, x, z , cam_hdg)
 
@@ -524,7 +524,7 @@ if MASTER then
 		local stab_set = get(stab_setting)
 		if flap_lever_pos>2 or flap_pos_L_last>25 then
 			if stab_dirr ==1 then
-				if flap_pos_L_last<31 then
+				if flap_pos_L_last<20 then
 					if stab_set == 2 then
 						stab_move=bool2int(stab_pos_now < mkv_2)
 					elseif stab_set == 1 then
@@ -540,18 +540,18 @@ if MASTER then
 					if stab_set == 2 then
 						stab_move=bool2int(stab_pos_now < mkv_3)       -- ?: max 5.5 internal
 					elseif stab_set == 1 then
-						stab_move=bool2int(stab_pos_now < 1.15)          -- C landing: 1.15*2.6=3.0 M-equiv, no dive
+						stab_move=bool2int(stab_pos_now < 4.5)          -- C landing: 4.5 internal = 4.77 physical with M real hstab, prevents dive
 					end
 					-- ? (stab_set==0): no stab drive, stays at baseline
 				end
 			elseif stab_dirr ==-1 then
 				if flap_pos_L_last<44 then
-					if flap_pos_L_last >= 31 then
+					if flap_pos_L_last >= 20 then
 						-- landing stage retract: CG-dependent
 						if stab_set == 2 then
 							stab_move=-bool2int(stab_pos_now >= mkv_3)
 						elseif stab_set == 1 then
-							stab_move=-bool2int(stab_pos_now >= 1.15)
+							stab_move=-bool2int(stab_pos_now >= 4.5)
 						end
 					else
 						-- takeoff stage retract: CG-dependent
@@ -574,7 +574,7 @@ if MASTER then
 	
 	
 	-- stab movements
-	stab_pos_now = stab_pos_now + stab_move_act * passed * (bool2int(stab_mechs > 0) * power115_1 + bool2int(stab_mechs > 1) * power115_3) * 0.06 * bool2int(power27_L) -- REDUCED from 0.11: slower stab coupling suppresses flap-15 balloon (0.06?0.24? in 4s flap extension vs 0.44? before)
+	stab_pos_now = stab_pos_now + stab_move_act * passed * (bool2int(stab_mechs > 0) * power115_1 + bool2int(stab_mechs > 1) * power115_3) * 0.22 * bool2int(power27_L) -- DIVE FIX: 2x original rate so stab reaches landing target before flap 45 Cm overwhelms -- REDUCED from 0.11: slower stab coupling suppresses flap-15 balloon (0.06?0.24? in 4s flap extension vs 0.44? before)
 	
 	if stab_move ~= 0 then
 		if stab_mechs > 1 then CC_115_1 = CC_115_1 + 6.5 end
